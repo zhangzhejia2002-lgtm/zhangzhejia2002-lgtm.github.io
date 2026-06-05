@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Hanken+Grotesk:wght@400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#E8DAC2; --bg-2:#F1EEE8;
+    --bg:#EEE4D2; --bg-2:#F1EEE8;
     --panel:#DCE7F4; --panel-line:#BFD2E8;
     --ink:#2C313B; --ink-soft:#666C76; --ink-faint:#9AA0A8;
     --accent:#5C7C9E; --accent-dp:#3F567A;
@@ -108,9 +108,9 @@
   @media (max-width:520px){ .row{ grid-template-columns:1fr; gap:4px; } }
 
   /* ===== Gallery: stacks that expand ===== */
-  .stacks{ display:flex; flex-wrap:wrap; gap:46px 56px; margin-top:24px; width:100%; }
-  .stack{ width:calc((100% - 56px) / 2); }
-  .stack-deck{ position:relative; width:70%; aspect-ratio:1 / 1; height:auto; cursor:pointer; }
+  .stacks{ display:flex; flex-wrap:wrap; justify-content:center; gap:46px 80px; margin-top:24px; width:100%; }
+  .stack{ width:min(250px, 100%); }
+  .stack-deck{ position:relative; width:100%; aspect-ratio:1 / 1; height:auto; cursor:pointer; }
   .stack-deck .ph{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border:5px solid #fff; box-shadow:0 12px 26px -12px rgba(44,49,59,.5); border-radius:2px; transition:transform .45s var(--ease), box-shadow .45s var(--ease); backface-visibility:hidden; }
   .stack-deck .ph:nth-child(1){ transform:rotate(-6deg) translate(-6px,4px); }
   .stack-deck .ph:nth-child(2){ transform:rotate(4deg) translate(7px,-3px); }
@@ -121,12 +121,6 @@
   .stack-deck .count{ position:absolute; right:-8px; bottom:-8px; z-index:5; background:var(--accent); color:#fff; font-size:12px; font-weight:700; padding:3px 9px; border-radius:99px; box-shadow:0 4px 10px -4px rgba(0,0,0,.4); }
   .stack-label{ margin-top:18px; font-family:"Hanken Grotesk",sans-serif; font-weight:700; font-size:16px; color:var(--ink); }
   .stack-sub{ font-size:13px; color:var(--ink-soft); }
-  /* Right column: push deck + labels to the right so they reach the section's right edge */
-  .stacks .stack:nth-child(2n) .stack-deck{ margin-left:auto; }
-  .stacks .stack:nth-child(2n) .stack-label,
-  .stacks .stack:nth-child(2n) .stack-sub{ text-align:right; }
-  .stacks .stack.open .stack-label,
-  .stacks .stack.open .stack-sub{ text-align:left; }
   .stack.open{ width:100%; }
   .stack.open .stack-deck{ display:none; }
   .expanded{ display:none; }
@@ -176,7 +170,7 @@
   .topnav a{ font-size:14px; white-space:nowrap; }
   .topnav a.active::after{ bottom:-19px; }
   .shell.show{ flex-direction:column; }
-  .sidebar{ position:static; width:auto; flex:none; flex-direction:row; flex-wrap:wrap; align-items:center; gap:16px 22px; padding:24px 22px; border-bottom:1px solid var(--line); }
+  .sidebar{ position:static; width:auto; flex:none; flex-direction:row; flex-wrap:wrap; align-items:center; gap:16px 22px; padding:24px 22px; }
   .s-photo{ width:84px; flex:0 0 84px; }
   .s-id{ flex:1 1 200px; }
   .s-links{ flex:1 1 100%; flex-direction:row; flex-wrap:wrap; gap:10px 20px; margin-top:0; }
