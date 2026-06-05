@@ -52,6 +52,7 @@
   #home{ display:none; }
   #home.show{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
     min-height:calc(100vh - var(--header)); padding:0 56px; }
+  body.home-mode #home.show{transform:translateY(-35px);}
   html{background:var(--bg);min-height:100%;}
   body{background:var(--bg);min-height:100%;}
   body.home-mode{background:linear-gradient(to bottom right,var(--bg) 0%,#E4E7E6 55%,#D7E4F3 100%);background-attachment:fixed;}
@@ -77,7 +78,7 @@
   .s-links svg{ width:17px; height:17px; flex:0 0 17px; color:var(--accent); }
 
   .main{ flex:1 1 auto; min-width:0; }
-  .sec{ max-width:880px; padding:64px 56px; scroll-margin-top:var(--header); }
+  .sec{ max-width:880px; margin:0 auto; padding:64px 56px; scroll-margin-top:var(--header); }
   .sec:first-child{ border-top:none; padding-top:60px; }
 
   .sec h2{ font-family:"Caveat",cursive; font-weight:600; font-size:clamp(44px,5.6vw,60px); color:var(--accent); margin:0 0 26px; letter-spacing:-0.01em; line-height:1; }
