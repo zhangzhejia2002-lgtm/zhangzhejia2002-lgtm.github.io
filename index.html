@@ -1,13 +1,9 @@
 <!--
   ============================================================
   Zhejia Zhang — Personal Academic Homepage
-  · HOME = a separate full-screen splash page (instant switch).
-  · CONTENT = one scrolling page (About / Publications / News /
-    Awards / Gallery) with sticky sidebar; nav smooth-scrolls.
-  ------------------------------------------------------------
-  · Gallery: photos are 1.jpg … 15.jpg in the repo root.
-    Edit each <div class="g-cap"> caption as you like.
-  · Colors → edit --bg / --panel / --accent in :root
+  · Gallery is grouped into themed clusters; each cluster has a
+    small heading and its own horizontal scroll row.
+  · Photos: 1.jpg … 13.jpg, 14.png, 15.jpg in the repo root.
   ============================================================
 -->
 <!DOCTYPE html>
@@ -111,19 +107,23 @@
   .row strong{ font-weight:600; }
   @media (max-width:520px){ .row{ grid-template-columns:1fr; gap:4px; } }
 
-  /* ===== Gallery: horizontal scroll row ===== */
-  .gallery{ display:flex; gap:18px; overflow-x:auto; padding:4px 4px 18px; margin-top:8px;
+  /* ===== Gallery: themed clusters, each a horizontal scroll row ===== */
+  .cluster{ margin-top:30px; }
+  .cluster:first-of-type{ margin-top:14px; }
+  .cluster-h{ font-family:"Hanken Grotesk",sans-serif; font-weight:700; font-size:18px; color:var(--ink);
+    margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--line); }
+  .gallery{ display:flex; gap:18px; overflow-x:auto; padding:2px 2px 16px;
     scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; cursor:grab; }
   .gallery::-webkit-scrollbar{ height:8px; }
   .gallery::-webkit-scrollbar-thumb{ background:rgba(44,49,59,0.2); border-radius:99px; }
   .gallery.grabbing{ cursor:grabbing; }
-  .g-item{ flex:0 0 260px; scroll-snap-align:start; }
-  .g-img, .g-ph{ width:100%; height:300px; object-fit:cover; display:block; border:1px solid var(--line);
+  .g-item{ flex:0 0 240px; scroll-snap-align:start; }
+  .g-img, .g-ph{ width:100%; height:280px; object-fit:cover; display:block; border:1px solid var(--line);
     box-shadow:0 14px 34px -18px rgba(44,49,59,.4); border-radius:2px; }
   .g-ph{ background:radial-gradient(120% 120% at 30% 20%, var(--bg-2), #d9d3c8 80%);
     display:flex; align-items:center; justify-content:center; color:var(--ink-faint); font-size:13px; }
-  .g-cap{ margin-top:10px; font-size:14px; color:var(--ink-soft); }
-  @media (max-width:520px){ .g-item{ flex:0 0 78vw; } .g-img,.g-ph{ height:64vw; } }
+  .g-cap{ margin-top:9px; font-size:14px; color:var(--ink-soft); }
+  @media (max-width:520px){ .g-item{ flex:0 0 74vw; } .g-img,.g-ph{ height:62vw; } }
 
   @media (max-width:860px){
     .topbar{ padding:0 22px; } .topnav{ gap:18px; } .topnav a.active::after{ bottom:-19px; }
@@ -239,27 +239,54 @@
         <div class="row"><div class="d">2022</div><div>Engineering International Excellence Scholarship, University of Birmingham.</div></div>
       </section>
 
-      <!-- ===== Gallery (horizontal scroll, 1.jpg – 15.jpg) ===== -->
+      <!-- ===== Gallery (themed clusters) ===== -->
       <section class="sec wide" id="gallery">
         <h2>Gallery</h2>
-        <p class="prose" style="margin-bottom:10px;color:var(--ink-soft);font-size:16px;">The Moments Writ in the Book of Life.</p>
-        <div class="gallery">
-          <div class="g-item"><img src="1.jpg"  alt="" class="g-img"><div class="g-cap">狮子狗, 2025</div></div>
-          <div class="g-item"><img src="2.jpg"  alt="" class="g-img"><div class="g-cap">狮子狗, 2023</div></div>
-          <div class="g-item"><img src="3.jpg"  alt="" class="g-img"><div class="g-cap">狮子狗, 2025</div></div>
-          <div class="g-item"><img src="4.jpg"  alt="" class="g-img"><div class="g-cap">狮子狗, 2023</div></div>
-          <div class="g-item"><img src="5.jpg"  alt="" class="g-img"><div class="g-cap">狮子狗, 2024</div></div>
-          <div class="g-item"><img src="6.jpg"  alt="" class="g-img"><div class="g-cap">狮子狗, 2025n</div></div>
-          <div class="g-item"><img src="7.jpg"  alt="" class="g-img"><div class="g-cap">狮子狗, 2025</div></div>
-          <div class="g-item"><img src="8.jpg"  alt="" class="g-img"><div class="g-cap">Girlfriend and I, 2025</div></div>
-          <div class="g-item"><img src="9.jpg"  alt="" class="g-img"><div class="g-cap">High school friends & teacher, 2025</div></div>
-          <div class="g-item"><img src="10.jpg" alt="" class="g-img"><div class="g-cap">Graduation at Birmingham, 2025</div></div>
-          <div class="g-item"><img src="11.jpg" alt="" class="g-img"><div class="g-cap">Graduation day with Prof.Le Zhang, 2025</div></div>
-          <div class="g-item"><img src="12.jpg" alt="" class="g-img"><div class="g-cap">Graduation at Birmingham, 2025</div></div>
-          <div class="g-item"><img src="13.jpg" alt="" class="g-img"><div class="g-cap">Northwestern University, 2025</div></div>
-          <div class="g-item"><img src="14.png" alt="" class="g-img"><div class="g-cap">AIMP-Lab, 2025</div></div>
-          <div class="g-item"><img src="15.jpg" alt="" class="g-img"><div class="g-cap">狮子狗, 2025</div></div>
+        <p class="prose" style="margin-bottom:6px;color:var(--ink-soft);font-size:16px;">The Moments Writ in the Book of Life.</p>
+
+        <!-- Cluster 1: pet -->
+        <div class="cluster">
+          <div class="cluster-h">狮子狗</div>
+          <div class="gallery">
+            <div class="g-item"><img src="2.jpg"  alt="" class="g-img"><div class="g-cap">2023</div></div>
+            <div class="g-item"><img src="4.jpg"  alt="" class="g-img"><div class="g-cap">2023</div></div>
+            <div class="g-item"><img src="5.jpg"  alt="" class="g-img"><div class="g-cap">2024</div></div>
+            <div class="g-item"><img src="1.jpg"  alt="" class="g-img"><div class="g-cap">2025</div></div>
+            <div class="g-item"><img src="3.jpg"  alt="" class="g-img"><div class="g-cap">2025</div></div>
+            <div class="g-item"><img src="6.jpg"  alt="" class="g-img"><div class="g-cap">2025</div></div>
+            <div class="g-item"><img src="7.jpg"  alt="" class="g-img"><div class="g-cap">2025</div></div>
+            <div class="g-item"><img src="15.jpg" alt="" class="g-img"><div class="g-cap">2025</div></div>
+          </div>
         </div>
+
+        <!-- Cluster 2: family & friends -->
+        <div class="cluster">
+          <div class="cluster-h">Family &amp; Friends</div>
+          <div class="gallery">
+            <div class="g-item"><img src="8.jpg" alt="" class="g-img"><div class="g-cap">Girlfriend and I, 2025</div></div>
+            <div class="g-item"><img src="9.jpg" alt="" class="g-img"><div class="g-cap">High school friends &amp; teacher, 2025</div></div>
+          </div>
+        </div>
+
+        <!-- Cluster 3: graduation -->
+        <div class="cluster">
+          <div class="cluster-h">Graduation · Birmingham</div>
+          <div class="gallery">
+            <div class="g-item"><img src="10.jpg" alt="" class="g-img"><div class="g-cap">Graduation at Birmingham, 2025</div></div>
+            <div class="g-item"><img src="12.jpg" alt="" class="g-img"><div class="g-cap">Graduation at Birmingham, 2025</div></div>
+            <div class="g-item"><img src="11.jpg" alt="" class="g-img"><div class="g-cap">With Prof. Le Zhang, 2025</div></div>
+          </div>
+        </div>
+
+        <!-- Cluster 4: Northwestern -->
+        <div class="cluster">
+          <div class="cluster-h">Northwestern</div>
+          <div class="gallery">
+            <div class="g-item"><img src="13.jpg" alt="" class="g-img"><div class="g-cap">Northwestern University, 2025</div></div>
+            <div class="g-item"><img src="14.png" alt="" class="g-img"><div class="g-cap">AIMP-Lab, 2025</div></div>
+          </div>
+        </div>
+
       </section>
 
     </main>
@@ -310,15 +337,14 @@
     }, { rootMargin: '-45% 0px -50% 0px' });
     document.querySelectorAll('.sec[id]').forEach(s => io.observe(s));
 
-    // Gallery: drag to scroll with the mouse (touch already works)
-    const g = document.querySelector('.gallery');
-    if (g){
+    // Drag-to-scroll for every cluster row
+    document.querySelectorAll('.gallery').forEach(g => {
       let down=false, startX, startL;
       g.addEventListener('mousedown', e=>{ down=true; g.classList.add('grabbing'); startX=e.pageX; startL=g.scrollLeft; });
       window.addEventListener('mouseup', ()=>{ down=false; g.classList.remove('grabbing'); });
       g.addEventListener('mouseleave', ()=>{ down=false; g.classList.remove('grabbing'); });
       g.addEventListener('mousemove', e=>{ if(!down) return; e.preventDefault(); g.scrollLeft = startL - (e.pageX - startX); });
-    }
+    });
 
     go(location.hash.slice(1) || 'home');
   </script>
