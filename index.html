@@ -121,6 +121,12 @@
   .stack-deck .count{ position:absolute; right:-8px; bottom:-8px; z-index:5; background:var(--accent); color:#fff; font-size:12px; font-weight:700; padding:3px 9px; border-radius:99px; box-shadow:0 4px 10px -4px rgba(0,0,0,.4); }
   .stack-label{ margin-top:18px; font-family:"Hanken Grotesk",sans-serif; font-weight:700; font-size:16px; color:var(--ink); }
   .stack-sub{ font-size:13px; color:var(--ink-soft); }
+  /* Right column: push deck + labels to the right so they reach the section's right edge */
+  .stacks .stack:nth-child(2n) .stack-deck{ margin-left:auto; }
+  .stacks .stack:nth-child(2n) .stack-label,
+  .stacks .stack:nth-child(2n) .stack-sub{ text-align:right; }
+  .stacks .stack.open .stack-label,
+  .stacks .stack.open .stack-sub{ text-align:left; }
   .stack.open{ width:100%; }
   .stack.open .stack-deck{ display:none; }
   .expanded{ display:none; }
