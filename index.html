@@ -124,7 +124,22 @@
   .stack.open{ width:100%; }
   .stack.open .stack-deck{ display:none; }
   .expanded{ display:none; }
-  .stack.open .expanded{ display:block; animation:fade .4s var(--ease); }
+  .stack.open .expanded{ display:block; }
+  @keyframes expReveal{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+  @keyframes itemRise{ from{ opacity:0; transform:translateY(18px) scale(.985); } to{ opacity:1; transform:none; } }
+  .stack.open .exp-h{ animation:expReveal .5s var(--ease) both; }
+  .stack.open .exp-item{ animation:itemRise .6s var(--ease) both; will-change:transform,opacity; }
+  .stack.open .exp-item:nth-child(1){ animation-delay:.05s; }
+  .stack.open .exp-item:nth-child(2){ animation-delay:.10s; }
+  .stack.open .exp-item:nth-child(3){ animation-delay:.15s; }
+  .stack.open .exp-item:nth-child(4){ animation-delay:.20s; }
+  .stack.open .exp-item:nth-child(5){ animation-delay:.25s; }
+  .stack.open .exp-item:nth-child(6){ animation-delay:.30s; }
+  .stack.open .exp-item:nth-child(7){ animation-delay:.35s; }
+  .stack.open .exp-item:nth-child(8){ animation-delay:.40s; }
+  @media (prefers-reduced-motion:reduce){
+    .stack.open .exp-h, .stack.open .exp-item{ animation:none; }
+  }
   .expanded .exp-h{ font-family:"Hanken Grotesk",sans-serif; font-weight:700; font-size:18px; color:var(--ink); margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:12px; }
   .exp-close{ margin-left:auto; font-size:13px; font-weight:600; color:var(--accent); cursor:pointer; }
   .exp-row{ display:flex; gap:16px; overflow-x:auto; padding-bottom:12px; }
@@ -149,9 +164,9 @@
   @media (max-width:520px){ .lb-btn{ width:40px; height:40px; } .lb-prev{ left:8px; } .lb-next{ right:8px; } }
 
   @media (max-width:860px){
-  .topbar{ justify-content:flex-start; padding:0 12px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .topbar{ justify-content:safe center; padding:0 12px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
   .topbar::-webkit-scrollbar{ display:none; }
-  .topnav{ gap:16px; width:max-content; margin:0 auto; }
+  .topnav{ gap:16px; width:max-content; }
   .topnav a{ font-size:14px; white-space:nowrap; }
   .topnav a.active::after{ bottom:-19px; }
   .shell.show{ flex-direction:column; }
@@ -266,7 +281,7 @@
       </section>
 
       <!-- ===== Gallery (stacks → expand → lightbox) ===== -->
-      <section class="sec wide" id="gallery">
+      <section class="sec" id="gallery">
         <h2>Gallery</h2>
         <p class="prose" style="margin-bottom:6px;color:var(--ink-soft);font-size:16px;">The Moments Writ in the Book of Life.</p>
 
@@ -399,7 +414,18 @@
 
     // --- Stacks: click deck to open the cluster, click ✕ to close ---
     document.querySelectorAll('.stack').forEach(stack => {
-      stack.querySelector('.stack-deck').addEventListener('click', () => stack.classList.add('open'));
+      const deck = stack.querySelector('.stack-deck');
+      const imgs = [...stack.querySelectorAll('.expanded img')];
+      deck.addEventListener('click', async () => {
+        deck.style.pointerEvents = 'none';                  // guard against double-clicks during decode
+        // Decode this cluster's images off the main paint so the reveal doesn't hitch on first open
+        await Promise.all(imgs.map(im => {
+          im.loading = 'eager';
+          return (im.decode ? im.decode() : Promise.resolve()).catch(() => {});
+        }));
+        stack.classList.add('open');
+        deck.style.pointerEvents = '';
+      });
       stack.querySelector('.exp-close').addEventListener('click', () => stack.classList.remove('open'));
     });
 
