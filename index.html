@@ -1,174 +1,50 @@
-<!--
-  ============================================================
-  Zhejia Zhang — Personal Academic Homepage
-  ------------------------------------------------------------
-  EDIT NOTES
-  · Content is filled from your CV. Tweak any wording freely.
-  · CV button links to "CV.pdf" — upload your PDF to the same
-    repo, renamed CV.pdf (or change the href below).
-  · Photo: replace the .portrait placeholder text with
-    <img src="me.jpg" alt="Zhejia Zhang" style="width:100%;height:100%;object-fit:cover;display:block;">
-  · LinkedIn link is still a placeholder (href="#") — fill it in.
-  · To change colors: edit --panel and --accent in :root.
-  ============================================================
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Zhejia Zhang · Academic Homepage</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Hanken+Grotesk:wght@400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:        #E9E6DF;
-    --bg-2:      #F1EEE8;
-    --panel:     #DEE8F5;
-    --panel-dp:  #D2E0F1;
-    --ink:       #2C313B;
-    --ink-soft:  #666C76;
-    --ink-faint: #9AA0A8;
-    --accent:    #5C7C9E;
-    --accent-dp: #41566E;
-    --line:      rgba(44,49,59,0.15);
-    --maxw:      1120px;
-    --ease:      cubic-bezier(0.16,1,0.3,1);
-  }
-  *{ margin:0; padding:0; box-sizing:border-box; }
-  html{ scroll-behavior:smooth; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
-  body{ font-family:"Hanken Grotesk",-apple-system,sans-serif; background:var(--bg); color:var(--ink); line-height:1.62; font-size:16px; }
-  body::after{ content:""; position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:0.035; mix-blend-mode:multiply;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-  .serif{ font-family:"Fraunces",serif; }
-  .script{ font-family:"Caveat",cursive; }
-
-  .label{ font-size:11px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:var(--ink-soft); }
-  .label .n{ color:var(--accent); margin-right:10px; }
-
-  /* Masthead */
-  .mast{ position:sticky; top:0; z-index:100; background:color-mix(in srgb,var(--bg) 88%,transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
-  .mast-in{ max-width:var(--maxw); margin:0 auto; padding:16px 32px; display:flex; align-items:baseline; justify-content:space-between; gap:24px; }
-  .mast-name{ font-size:22px; font-weight:500; color:var(--accent); letter-spacing:-0.01em; }
-  .mast-nav{ display:flex; gap:26px; flex-wrap:wrap; }
-  .mast-nav a{ color:var(--ink); text-decoration:none; font-size:13px; font-weight:500; position:relative; transition:color .25s var(--ease); }
-  .mast-nav a.active{ color:var(--accent); }
-  .mast-nav a::after{ content:""; position:absolute; left:0; bottom:-3px; width:0; height:1px; background:var(--accent); transition:width .3s var(--ease); }
-  .mast-nav a:hover{ color:var(--accent); } .mast-nav a:hover::after{ width:100%; }
-  .subbar{ max-width:var(--maxw); margin:0 auto; padding:10px 32px 0; }
-  .subbar .dept{ font-size:13px; color:var(--accent); line-height:1.5; }
-  @media (max-width:760px){ .mast-in{flex-direction:column; align-items:flex-start; gap:12px;} .mast-nav{gap:16px;} }
-
-  /* Hero */
-  .hero{ --band:150px; background:linear-gradient(to bottom, var(--bg) 0, var(--bg) var(--band), var(--panel) var(--band), var(--panel) 100%); }
-  .hero-in{ max-width:var(--maxw); margin:0 auto; padding:0 32px 88px; display:grid; grid-template-columns:340px 1fr; gap:64px; }
-  .portrait-col{ margin-top:44px; }
-  .portrait{ width:100%; aspect-ratio:4/5; overflow:hidden; background:radial-gradient(120% 120% at 30% 20%, var(--bg-2), #dcd8cf 78%); border:1px solid rgba(0,0,0,0.06); box-shadow:0 34px 70px -34px rgba(44,49,59,0.4); display:flex; align-items:center; justify-content:center; color:var(--ink-faint); font-size:13px; text-align:center; }
-  .text-col{ padding-top:196px; }
-  .hero .hi{ font-size:30px; color:var(--accent); line-height:1; margin-bottom:6px; }
-  .hero h1{ font-family:"Fraunces",serif; font-weight:500; font-size:clamp(40px,6vw,78px); line-height:1.0; letter-spacing:-0.02em; color:var(--ink); }
-  .hero .affil{ margin-top:26px; font-size:16px; font-weight:700; color:var(--ink); }
-  .hero .lede{ margin-top:14px; font-size:16px; color:var(--ink-soft); max-width:460px; line-height:1.7; }
-  .hero .links{ margin-top:26px; display:flex; gap:12px; flex-wrap:wrap; }
-  .btn{ display:inline-block; padding:10px 20px; border-radius:980px; font-size:14px; font-weight:600; text-decoration:none; transition:transform .3s var(--ease), background .3s var(--ease), color .3s var(--ease); }
-  .btn-solid{ background:var(--accent); color:#fff; } .btn-solid:hover{ background:var(--accent-dp); transform:translateY(-2px); }
-  .btn-line{ color:var(--ink); border:1px solid var(--line); } .btn-line:hover{ border-color:var(--accent); color:var(--accent); transform:translateY(-2px); }
-  @media (max-width:860px){
-    .hero{ background:var(--panel); }
-    .hero-in{ grid-template-columns:1fr; gap:30px; padding-top:40px; padding-bottom:60px; }
-    .portrait-col{ margin-top:0; max-width:280px; } .text-col{ padding-top:0; }
-  }
-
-  /* Sections */
-  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 32px; }
-  section{ padding:92px 0; border-top:1px solid var(--line); }
-  .grid{ display:grid; grid-template-columns:minmax(150px,200px) 1fr; gap:48px; }
-  @media (max-width:780px){ .grid{ grid-template-columns:1fr; gap:16px; } }
-  .sec-title{ font-family:"Fraunces",serif; font-weight:500; font-size:clamp(28px,3.6vw,40px); line-height:1.05; color:var(--ink); margin-bottom:8px; }
-  .sec-title .it{ font-style:italic; color:var(--accent); }
-  .sec-lede{ color:var(--ink-soft); max-width:560px; }
-  .ph{ color:var(--ink-soft); }
-
-  .about-grid{ display:grid; grid-template-columns:240px 1fr; gap:48px; align-items:start; }
-  @media (max-width:680px){ .about-grid{ grid-template-columns:1fr; gap:28px; } }
-  .about-grid .mini{ width:100%; background:var(--panel); border:1px solid var(--line); padding:22px; }
-  .about-grid .mini .k{ font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); }
-  .about-grid .mini .v{ font-size:15px; color:var(--ink); margin:4px 0 16px; line-height:1.5; }
-  .about-grid .mini .v:last-child{ margin-bottom:0; }
-  .prose p{ font-size:18px; line-height:1.75; margin-bottom:18px; max-width:600px; } .prose p:last-child{ margin-bottom:0; }
-
-  .rows .row{ display:grid; gap:6px; padding:24px 0; border-top:1px solid var(--line); transition:padding-left .35s var(--ease); }
-  .rows .row:first-child{ border-top:none; padding-top:0; }
-  .rows .row:hover{ padding-left:12px; }
-  .focus{ grid-template-columns:54px 1fr; align-items:baseline; }
-  .focus .idx{ font-family:"Fraunces",serif; font-size:22px; color:var(--accent); }
-  .focus h3{ font-family:"Fraunces",serif; font-weight:500; font-size:23px; color:var(--ink); }
-  .focus p{ grid-column:2; color:var(--ink-soft); max-width:620px; }
-  @media (max-width:520px){ .focus{ grid-template-columns:1fr; } .focus p{ grid-column:1; } }
-
-  .pub{ grid-template-columns:64px 1fr; }
-  .pub .yr{ font-family:"Fraunces",serif; font-size:19px; color:var(--ink-soft); }
-  .pub > div:nth-child(2){ grid-column:2; }
-  .pub .t{ font-size:18px; font-weight:600; color:var(--ink); }
-  .pub .m{ color:var(--ink-soft); font-size:15px; } .pub .m .it{ font-style:italic; }
-  .pub .badge{ display:inline-block; margin-top:8px; font-size:12px; font-weight:600; letter-spacing:0.03em; color:var(--accent); border:1px solid color-mix(in srgb,var(--accent) 35%,transparent); padding:2px 10px; border-radius:980px; }
-  .pub .lk{ grid-column:2; margin-top:10px; display:flex; gap:18px; }
-  .pub .lk a{ font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--accent); text-decoration:none; }
-  .pub .lk a:hover{ text-decoration:underline; text-underline-offset:3px; }
-  @media (max-width:520px){ .pub{ grid-template-columns:1fr; } .pub>div:nth-child(2),.pub .lk{ grid-column:1; } }
-
-  .news{ grid-template-columns:120px 1fr; align-items:baseline; }
-  .news .d{ font-family:"Fraunces",serif; font-size:17px; color:var(--ink-soft); }
-  @media (max-width:520px){ .news{ grid-template-columns:1fr; } }
-
-  /* Contact */
-  footer{ background:var(--panel); margin-top:0; padding:88px 0 56px; }
-  .foot-in{ max-width:var(--maxw); margin:0 auto; padding:0 32px; }
-  footer .hi{ font-family:"Caveat",cursive; font-size:34px; color:var(--accent); line-height:1; }
-  footer h2{ font-family:"Fraunces",serif; font-weight:500; font-size:clamp(38px,6vw,64px); line-height:1; color:var(--ink); margin:6px 0 34px; }
-  footer h2 .it{ font-style:italic; color:var(--accent); }
-  .foot-links{ display:flex; gap:30px; flex-wrap:wrap; margin-bottom:54px; }
-  .foot-links a{ color:var(--ink); text-decoration:none; font-size:17px; border-bottom:1px solid var(--accent); padding-bottom:2px; transition:color .25s var(--ease); }
-  .foot-links a:hover{ color:var(--accent); }
-  .foot-meta{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; padding-top:24px; border-top:1px solid var(--line); font-size:13px; color:var(--ink-soft); }
-
-  .reveal{ opacity:0; transform:translateY(20px); transition:opacity .9s var(--ease), transform .9s var(--ease); }
-  .reveal.in{ opacity:1; transform:none; }
-  @media (prefers-reduced-motion:reduce){ .reveal{opacity:1;transform:none;} html{scroll-behavior:auto;} }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zhejia Zhang · Academic Homepage</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- ===== Masthead ===== -->
   <div class="mast">
     <div class="mast-in">
       <div class="mast-name serif">Zhejia Zhang</div>
       <nav class="mast-nav">
-        <a href="#home" class="active">Home</a>
-        <a href="#about">About</a>
-        <a href="#research">Research</a>
-        <a href="#publications">Publications</a>
-        <a href="#news">News</a>
-        <a href="#contact">Contact</a>
+        <a href="index.html" class="active">Home</a>
+        <a href="about.html">About</a>
+        <a href="research.html">Research</a>
+        <a href="publications.html">Publications</a>
+        <a href="news.html">News</a>
+        <a href="contact.html">Contact</a>
       </nav>
     </div>
   </div>
+
   <div class="subbar">
-    <div class="dept">M.S. in Electrical Engineering, Northwestern University<br>Evanston, IL, USA</div>
+    <div class="dept">
+      M.S. in Electrical Engineering, Northwestern University<br>
+      Evanston, IL, USA
+    </div>
   </div>
 
-  <!-- ===== Hero ===== -->
   <div class="hero" id="home">
     <div class="hero-in">
       <div class="portrait-col reveal">
         <div class="portrait">Portrait / headshot</div>
       </div>
+
       <div class="text-col reveal">
         <div class="hi script">Hello, I'm</div>
         <h1>Zhejia<br>Zhang</h1>
         <div class="affil">Graduate Researcher · AIMP-Lab, Northwestern University</div>
-        <p class="lede">I work on deep learning and generative models for medical image analysis — building physically-grounded methods for quantitative PET attenuation correction and robust multi-modal imaging.</p>
+        <p class="lede">
+          I work on deep learning and generative models for medical image analysis —
+          building physically-grounded methods for quantitative PET attenuation correction
+          and robust multi-modal imaging.
+        </p>
+
         <div class="links">
           <a class="btn btn-solid" href="CV.pdf">Curriculum Vitae</a>
           <a class="btn btn-line" href="https://scholar.google.com/citations?user=pd7WZh8AAAAJ">Google Scholar</a>
@@ -178,104 +54,18 @@
     </div>
   </div>
 
-  <div class="wrap">
-
-    <!-- ===== About ===== -->
-    <section id="about" class="reveal">
-      <div class="grid">
-        <div class="label"><span class="n">01</span>About</div>
-        <div class="about-grid">
-          <div class="mini">
-            <div class="k">Education</div>
-            <div class="v">M.S. Electrical Engineering<br>Northwestern University, 2025–2026</div>
-            <div class="k">Previously</div>
-            <div class="v">B.Eng. (First Class Hons.)<br>University of Birmingham, 2022–2025</div>
-            <div class="k">Interests</div>
-            <div class="v">Medical image analysis · deep learning · computer vision · generative models</div>
-          </div>
-          <div class="prose">
-            <p>I'm a master's student in Electrical Engineering at Northwestern University and a graduate researcher in the AIMP-Lab. My research sits at the intersection of generative models and medical image analysis.</p>
-            <p>Before Northwestern, I completed a First-Class B.Eng. in Electronic and Electrical Engineering at the University of Birmingham. I'm especially interested in making generative image translation reliable enough for clinical use — preserving absolute physical quantities such as SUV, not just visual fidelity.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== Research ===== -->
-    <section id="research" class="reveal">
-      <div class="grid">
-        <div class="label"><span class="n">02</span>Research</div>
-        <div>
-          <h2 class="sec-title">Research <span class="it">focus</span></h2>
-          <p class="sec-lede" style="margin-bottom:38px;">A few directions my work has centered on. Feel free to edit or add more.</p>
-          <div class="rows">
-            <div class="row focus">
-              <div class="idx">01</div><h3>CT-Free PET Attenuation Correction</h3>
-              <p>Diffusion-based generative methods for CT-free PET attenuation correction, with a focus on preserving absolute SUV quantification through explicit, physically-grounded feature guidance (Dual-Stream Gated Skip + Brownian Bridge Diffusion).</p>
-            </div>
-            <div class="row focus">
-              <div class="idx">02</div><h3>Missing-Modality Medical Imaging</h3>
-              <p>Robust multi-modal frameworks that compensate for missing MRI modalities, enabling reliable diagnosis such as liver fibrosis staging from non-contrast T1WI / T2WI / DWI.</p>
-            </div>
-            <div class="row focus">
-              <div class="idx">03</div><h3>Generative Image-to-Image Translation</h3>
-              <p>A taxonomy of diffusion-based image-to-image translation — trajectory parameterization, condition injection, and the efficiency–fidelity trade-off — read through the lens of quantitative medical imaging.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== Publications ===== -->
-    <section id="publications" class="reveal">
-      <div class="grid">
-        <div class="label"><span class="n">03</span>Publications</div>
-        <div>
-          <h2 class="sec-title">Selected <span class="it">work</span></h2>
-          <p class="sec-lede" style="margin-bottom:38px;">In reverse chronological order.</p>
-          <div class="rows">
-            <div class="row pub">
-              <div class="yr">2025</div>
-              <div>
-                <div class="t">Improved mmFormer for Liver Fibrosis Staging via Missing-Modality Compensation</div>
-                <div class="m"><strong>Zhejia Zhang</strong>, Junjie Wang, Le Zhang. <span class="it">arXiv:2509.16436</span>, 2025.</div>
-                <span class="badge">MICCAI CARE25 · Oral · Top 16%</span>
-              </div>
-              <div class="lk"><a href="https://arxiv.org/abs/2509.16436">arXiv</a><a href="https://arxiv.org/pdf/2509.16436">PDF</a></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== News ===== -->
-    <section id="news" class="reveal">
-      <div class="grid">
-        <div class="label"><span class="n">04</span>News</div>
-        <div>
-          <h2 class="sec-title">Recent <span class="it">news</span></h2>
-          <div class="rows" style="margin-top:32px;">
-            <div class="row news"><div class="d">2026.02</div><div>Started as a graduate researcher in the AIMP-Lab at Northwestern, working on diffusion-based CT-free PET attenuation correction.</div></div>
-            <div class="row news"><div class="d">2025.09</div><div>“Improved mmFormer” accepted at the MICCAI CARE25 Challenge — selected for oral presentation (top 16% of submissions).</div></div>
-            <div class="row news"><div class="d">2025.09</div><div>Began the M.S. in Electrical Engineering at Northwestern University.</div></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </div>
-
-  <!-- ===== Contact / footer ===== -->
-  <footer id="contact" class="reveal">
+  <footer class="reveal">
     <div class="foot-in">
       <div class="hi script">Say hello</div>
       <h2>Get in <span class="it">touch</span></h2>
+
       <div class="foot-links">
         <a href="mailto:zhejiazhang2026@u.northwestern.edu">Email</a>
         <a href="https://scholar.google.com/citations?user=pd7WZh8AAAAJ">Google Scholar</a>
         <a href="https://github.com/zhangzhejia2002-lgtm">GitHub</a>
         <a href="#">LinkedIn</a>
       </div>
+
       <div class="foot-meta">
         <span>© <span id="year"></span> Zhejia Zhang</span>
         <span>Electrical Engineering · Northwestern University</span>
@@ -283,11 +73,6 @@
     </div>
   </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-    const io = new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }); }, { threshold:0.1 });
-    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-    document.querySelectorAll('.hero .reveal').forEach((el,i)=>setTimeout(()=>el.classList.add('in'),90+i*130));
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
