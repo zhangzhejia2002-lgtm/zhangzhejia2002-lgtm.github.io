@@ -1,8 +1,9 @@
 <!--
   ============================================================
   Zhejia Zhang — Personal Academic Homepage
-  · Gallery is grouped into themed clusters; each cluster has a
-    small heading and its own horizontal scroll row.
+  · Gallery clusters: each is a "stack" of tilted photos. Click a
+    stack to expand it in place; click any photo to open it
+    fullscreen (lightbox) with prev / next / close.
   · Photos: 1.jpg … 13.jpg, 14.png, 15.jpg in the repo root.
   ============================================================
 -->
@@ -92,7 +93,6 @@
   .pub{ display:grid; grid-template-columns:180px 1fr; gap:28px; padding:26px 0; border-top:1px solid var(--line); transition:padding-left .35s var(--ease); }
   .pub:first-of-type{ border-top:none; padding-top:4px; } .pub:hover{ padding-left:8px; }
   .pub img.thumb{ width:100%; height:110px; object-fit:contain; display:block; border:1px solid var(--line); background:transparent; }
-  .pub div.thumb{ width:100%; height:110px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line); background:transparent; color:var(--accent-dp); font-size:12px; }
   .pub .t{ font-size:18px; font-weight:600; color:var(--ink); }
   .pub .m{ font-size:15px; color:var(--ink-soft); margin-top:4px; } .pub .m .it{ font-style:italic; } .pub strong{ color:var(--ink); }
   .pub .badge{ display:inline-block; margin-top:9px; font-size:12px; font-weight:600; color:var(--accent); }
@@ -107,23 +107,54 @@
   .row strong{ font-weight:600; }
   @media (max-width:520px){ .row{ grid-template-columns:1fr; gap:4px; } }
 
-  /* ===== Gallery: themed clusters, each a horizontal scroll row ===== */
-  .cluster{ margin-top:30px; }
-  .cluster:first-of-type{ margin-top:14px; }
-  .cluster-h{ font-family:"Hanken Grotesk",sans-serif; font-weight:700; font-size:18px; color:var(--ink);
-    margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--line); }
-  .gallery{ display:flex; gap:18px; overflow-x:auto; padding:2px 2px 16px;
-    scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; cursor:grab; }
-  .gallery::-webkit-scrollbar{ height:8px; }
-  .gallery::-webkit-scrollbar-thumb{ background:rgba(44,49,59,0.2); border-radius:99px; }
-  .gallery.grabbing{ cursor:grabbing; }
-  .g-item{ flex:0 0 240px; scroll-snap-align:start; }
-  .g-img, .g-ph{ width:100%; height:280px; object-fit:cover; display:block; border:1px solid var(--line);
-    box-shadow:0 14px 34px -18px rgba(44,49,59,.4); border-radius:2px; }
-  .g-ph{ background:radial-gradient(120% 120% at 30% 20%, var(--bg-2), #d9d3c8 80%);
-    display:flex; align-items:center; justify-content:center; color:var(--ink-faint); font-size:13px; }
-  .g-cap{ margin-top:9px; font-size:14px; color:var(--ink-soft); }
-  @media (max-width:520px){ .g-item{ flex:0 0 74vw; } .g-img,.g-ph{ height:62vw; } }
+  /* ===== Gallery: stacks that expand ===== */
+  .stacks{ display:flex; flex-wrap:wrap; gap:46px 56px; margin-top:24px; }
+
+  .stack{ width:230px; }
+  .stack-deck{ position:relative; width:230px; height:230px; cursor:pointer; }
+  /* the messy pile */
+  .stack-deck .ph{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    border:5px solid #fff; box-shadow:0 12px 26px -12px rgba(44,49,59,.5); border-radius:2px;
+    transition:transform .45s var(--ease), box-shadow .45s var(--ease); backface-visibility:hidden; }
+  .stack-deck .ph:nth-child(1){ transform:rotate(-6deg) translate(-6px,4px); }
+  .stack-deck .ph:nth-child(2){ transform:rotate(4deg) translate(7px,-3px); }
+  .stack-deck .ph:nth-child(3){ transform:rotate(-1deg); }
+  .stack-deck:hover .ph:nth-child(1){ transform:rotate(-10deg) translate(-12px,6px); }
+  .stack-deck:hover .ph:nth-child(2){ transform:rotate(8deg) translate(13px,-5px); }
+  .stack-deck:hover .ph:nth-child(3){ transform:rotate(0deg) translateY(-4px); }
+  .stack-deck .count{ position:absolute; right:-8px; bottom:-8px; z-index:5; background:var(--accent); color:#fff;
+    font-size:12px; font-weight:700; padding:3px 9px; border-radius:99px; box-shadow:0 4px 10px -4px rgba(0,0,0,.4); }
+  .stack-label{ margin-top:18px; font-family:"Hanken Grotesk",sans-serif; font-weight:700; font-size:16px; color:var(--ink); }
+  .stack-sub{ font-size:13px; color:var(--ink-soft); }
+
+  /* expanded row under a stack (full width) */
+  .stack.open{ width:100%; }
+  .stack.open .stack-deck{ display:none; }
+  .expanded{ display:none; }
+  .stack.open .expanded{ display:block; animation:fade .4s var(--ease); }
+  .expanded .exp-h{ font-family:"Hanken Grotesk",sans-serif; font-weight:700; font-size:18px; color:var(--ink);
+    margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:12px; }
+  .exp-close{ margin-left:auto; font-size:13px; font-weight:600; color:var(--accent); cursor:pointer; }
+  .exp-row{ display:flex; gap:16px; overflow-x:auto; padding-bottom:12px; }
+  .exp-row::-webkit-scrollbar{ height:8px; } .exp-row::-webkit-scrollbar-thumb{ background:rgba(44,49,59,.2); border-radius:99px; }
+  .exp-item{ flex:0 0 220px; }
+  .exp-item img{ width:100%; height:260px; object-fit:cover; display:block; border:1px solid var(--line);
+    box-shadow:0 14px 34px -18px rgba(44,49,59,.4); border-radius:2px; cursor:zoom-in; transition:transform .3s var(--ease); }
+  .exp-item img:hover{ transform:translateY(-4px); }
+  .exp-item .cap{ margin-top:8px; font-size:13px; color:var(--ink-soft); }
+  @media (max-width:520px){ .exp-item{ flex:0 0 74vw; } .exp-item img{ height:62vw; } }
+
+  /* lightbox */
+  .lb{ position:fixed; inset:0; z-index:200; background:rgba(20,18,15,.92); display:none; align-items:center; justify-content:center; }
+  .lb.open{ display:flex; animation:fade .3s var(--ease); }
+  .lb img{ max-width:88vw; max-height:84vh; object-fit:contain; border-radius:3px; box-shadow:0 20px 60px -20px rgba(0,0,0,.7); }
+  .lb-cap{ position:absolute; bottom:28px; left:0; right:0; text-align:center; color:#f0ece3; font-size:14px; }
+  .lb-btn{ position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,.12); color:#fff; border:none;
+    width:48px; height:48px; border-radius:50%; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s; }
+  .lb-btn:hover{ background:rgba(255,255,255,.25); }
+  .lb-prev{ left:22px; } .lb-next{ right:22px; }
+  .lb-close{ position:absolute; top:20px; right:24px; background:none; border:none; color:#fff; font-size:30px; cursor:pointer; line-height:1; }
+  @media (max-width:520px){ .lb-btn{ width:40px; height:40px; } .lb-prev{ left:8px; } .lb-next{ right:8px; } }
 
   @media (max-width:860px){
     .topbar{ padding:0 22px; } .topnav{ gap:18px; } .topnav a.active::after{ bottom:-19px; }
@@ -239,57 +270,104 @@
         <div class="row"><div class="d">2022</div><div>Engineering International Excellence Scholarship, University of Birmingham.</div></div>
       </section>
 
-      <!-- ===== Gallery (themed clusters) ===== -->
+      <!-- ===== Gallery (stacks → expand → lightbox) ===== -->
       <section class="sec wide" id="gallery">
         <h2>Gallery</h2>
-        <p class="prose" style="margin-bottom:6px;color:var(--ink-soft);font-size:16px;">The Moments Writ in the Book of Life.</p>
+        <p class="prose" style="margin-bottom:6px;color:var(--ink-soft);font-size:16px;">The Moments Writ in the Book of Life — tap a stack to open.</p>
 
-        <!-- Cluster 1: pet -->
-        <div class="cluster">
-          <div class="cluster-h">狮子狗</div>
-          <div class="gallery">
-            <div class="g-item"><img src="2.jpg"  alt="" class="g-img"><div class="g-cap">2023</div></div>
-            <div class="g-item"><img src="4.jpg"  alt="" class="g-img"><div class="g-cap">2023</div></div>
-            <div class="g-item"><img src="5.jpg"  alt="" class="g-img"><div class="g-cap">2024</div></div>
-            <div class="g-item"><img src="1.jpg"  alt="" class="g-img"><div class="g-cap">2025</div></div>
-            <div class="g-item"><img src="3.jpg"  alt="" class="g-img"><div class="g-cap">2025</div></div>
-            <div class="g-item"><img src="6.jpg"  alt="" class="g-img"><div class="g-cap">2025</div></div>
-            <div class="g-item"><img src="7.jpg"  alt="" class="g-img"><div class="g-cap">2025</div></div>
-            <div class="g-item"><img src="15.jpg" alt="" class="g-img"><div class="g-cap">2025</div></div>
+        <div class="stacks">
+
+          <!-- Each .stack: deck shows up to 3 cover photos; expanded shows ALL photos.
+               To add/remove photos, edit the .exp-item list (and the deck's <img> covers). -->
+
+          <!-- Cluster 1: Lion Dog -->
+          <div class="stack">
+            <div class="stack-deck">
+              <img class="ph" src="1.jpg"><img class="ph" src="3.jpg"><img class="ph" src="2.jpg">
+              <span class="count">8</span>
+            </div>
+            <div class="stack-label">Lion Dog</div>
+            <div class="stack-sub">2023 – 2025 · 8 photos</div>
+            <div class="expanded">
+              <div class="exp-h">Lion Dog <span class="exp-close">✕ Close</span></div>
+              <div class="exp-row">
+                <div class="exp-item"><img src="2.jpg"  alt=""><div class="cap">2023</div></div>
+                <div class="exp-item"><img src="4.jpg"  alt=""><div class="cap">2023</div></div>
+                <div class="exp-item"><img src="5.jpg"  alt=""><div class="cap">2024</div></div>
+                <div class="exp-item"><img src="1.jpg"  alt=""><div class="cap">2025</div></div>
+                <div class="exp-item"><img src="3.jpg"  alt=""><div class="cap">2025</div></div>
+                <div class="exp-item"><img src="6.jpg"  alt=""><div class="cap">2025</div></div>
+                <div class="exp-item"><img src="7.jpg"  alt=""><div class="cap">2025</div></div>
+                <div class="exp-item"><img src="15.jpg" alt=""><div class="cap">2025</div></div>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Cluster 2: family & friends -->
-        <div class="cluster">
-          <div class="cluster-h">Family &amp; Friends</div>
-          <div class="gallery">
-            <div class="g-item"><img src="8.jpg" alt="" class="g-img"><div class="g-cap">Girlfriend and I, 2025</div></div>
-            <div class="g-item"><img src="9.jpg" alt="" class="g-img"><div class="g-cap">High school friends &amp; teacher, 2025</div></div>
+          <!-- Cluster 2: Family & Friends -->
+          <div class="stack">
+            <div class="stack-deck">
+              <img class="ph" src="8.jpg"><img class="ph" src="9.jpg"><img class="ph" src="8.jpg">
+              <span class="count">2</span>
+            </div>
+            <div class="stack-label">Family &amp; Friends</div>
+            <div class="stack-sub">2025 · 2 photos</div>
+            <div class="expanded">
+              <div class="exp-h">Family &amp; Friends <span class="exp-close">✕ Close</span></div>
+              <div class="exp-row">
+                <div class="exp-item"><img src="8.jpg" alt=""><div class="cap">Girlfriend and I, 2025</div></div>
+                <div class="exp-item"><img src="9.jpg" alt=""><div class="cap">High school friends &amp; teacher, 2025</div></div>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Cluster 3: graduation -->
-        <div class="cluster">
-          <div class="cluster-h">Graduation · Birmingham</div>
-          <div class="gallery">
-            <div class="g-item"><img src="10.jpg" alt="" class="g-img"><div class="g-cap">Graduation at Birmingham, 2025</div></div>
-            <div class="g-item"><img src="12.jpg" alt="" class="g-img"><div class="g-cap">Graduation at Birmingham, 2025</div></div>
-            <div class="g-item"><img src="11.jpg" alt="" class="g-img"><div class="g-cap">With Prof. Le Zhang, 2025</div></div>
+          <!-- Cluster 3: Graduation -->
+          <div class="stack">
+            <div class="stack-deck">
+              <img class="ph" src="10.jpg"><img class="ph" src="11.jpg"><img class="ph" src="12.jpg">
+              <span class="count">3</span>
+            </div>
+            <div class="stack-label">Graduation · Birmingham</div>
+            <div class="stack-sub">2025 · 3 photos</div>
+            <div class="expanded">
+              <div class="exp-h">Graduation · Birmingham <span class="exp-close">✕ Close</span></div>
+              <div class="exp-row">
+                <div class="exp-item"><img src="10.jpg" alt=""><div class="cap">Graduation at Birmingham, 2025</div></div>
+                <div class="exp-item"><img src="12.jpg" alt=""><div class="cap">Graduation at Birmingham, 2025</div></div>
+                <div class="exp-item"><img src="11.jpg" alt=""><div class="cap">With Prof. Le Zhang, 2025</div></div>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Cluster 4: Northwestern -->
-        <div class="cluster">
-          <div class="cluster-h">Northwestern</div>
-          <div class="gallery">
-            <div class="g-item"><img src="13.jpg" alt="" class="g-img"><div class="g-cap">Northwestern University, 2025</div></div>
-            <div class="g-item"><img src="14.png" alt="" class="g-img"><div class="g-cap">AIMP-Lab, 2025</div></div>
+          <!-- Cluster 4: Northwestern -->
+          <div class="stack">
+            <div class="stack-deck">
+              <img class="ph" src="13.jpg"><img class="ph" src="14.png"><img class="ph" src="13.jpg">
+              <span class="count">2</span>
+            </div>
+            <div class="stack-label">Northwestern</div>
+            <div class="stack-sub">2025 · 2 photos</div>
+            <div class="expanded">
+              <div class="exp-h">Northwestern <span class="exp-close">✕ Close</span></div>
+              <div class="exp-row">
+                <div class="exp-item"><img src="13.jpg" alt=""><div class="cap">Northwestern University, 2025</div></div>
+                <div class="exp-item"><img src="14.png" alt=""><div class="cap">AIMP-Lab, 2025</div></div>
+              </div>
+            </div>
           </div>
-        </div>
 
+        </div>
       </section>
 
     </main>
+  </div>
+
+  <!-- ===== Lightbox ===== -->
+  <div class="lb" id="lb">
+    <button class="lb-close" aria-label="Close">&times;</button>
+    <button class="lb-btn lb-prev" aria-label="Previous">&#8249;</button>
+    <img id="lb-img" src="" alt="">
+    <button class="lb-btn lb-next" aria-label="Next">&#8250;</button>
+    <div class="lb-cap" id="lb-cap"></div>
   </div>
 
   <script>
@@ -301,49 +379,62 @@
     function go(target){
       const isHome = (target === 'home');
       const wasContent = shell.classList.contains('show');
-      navLock = true;
-      clearTimeout(navTimer);
+      navLock = true; clearTimeout(navTimer);
       navTimer = setTimeout(() => { navLock = false; }, 800);
-
       home.classList.toggle('show', isHome);
       shell.classList.toggle('show', !isHome);
       document.body.classList.toggle('home-mode', isHome);
-
-      if (isHome) {
-        window.scrollTo(0, 0);
-      } else {
+      if (isHome) { window.scrollTo(0, 0); }
+      else {
         const el = document.getElementById(target);
         if (!el) { window.scrollTo(0, 0); }
-        else if (wasContent) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-          window.scrollTo(0, 0);
-          requestAnimationFrame(() => requestAnimationFrame(() => {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }));
-        }
+        else if (wasContent) { el.scrollIntoView({ behavior:'smooth', block:'start' }); }
+        else { window.scrollTo(0, 0); requestAnimationFrame(()=>requestAnimationFrame(()=>el.scrollIntoView({behavior:'smooth',block:'start'}))); }
       }
       links.forEach(a => a.classList.toggle('active', a.dataset.go === target));
     }
-
     links.forEach(a => a.addEventListener('click', e => { e.preventDefault(); location.hash = a.dataset.go; }));
     window.addEventListener('hashchange', () => go(location.hash.slice(1) || 'home'));
 
     const io = new IntersectionObserver(entries => {
       if (home.classList.contains('show') || navLock) return;
-      entries.forEach(e => {
-        if (e.isIntersecting) links.forEach(a => a.classList.toggle('active', a.dataset.go === e.target.id));
-      });
+      entries.forEach(e => { if (e.isIntersecting) links.forEach(a => a.classList.toggle('active', a.dataset.go === e.target.id)); });
     }, { rootMargin: '-45% 0px -50% 0px' });
     document.querySelectorAll('.sec[id]').forEach(s => io.observe(s));
 
-    // Drag-to-scroll for every cluster row
-    document.querySelectorAll('.gallery').forEach(g => {
-      let down=false, startX, startL;
-      g.addEventListener('mousedown', e=>{ down=true; g.classList.add('grabbing'); startX=e.pageX; startL=g.scrollLeft; });
-      window.addEventListener('mouseup', ()=>{ down=false; g.classList.remove('grabbing'); });
-      g.addEventListener('mouseleave', ()=>{ down=false; g.classList.remove('grabbing'); });
-      g.addEventListener('mousemove', e=>{ if(!down) return; e.preventDefault(); g.scrollLeft = startL - (e.pageX - startX); });
+    // --- Stacks: click deck to open the cluster, click ✕ to close ---
+    document.querySelectorAll('.stack').forEach(stack => {
+      stack.querySelector('.stack-deck').addEventListener('click', () => stack.classList.add('open'));
+      stack.querySelector('.exp-close').addEventListener('click', () => stack.classList.remove('open'));
+    });
+
+    // --- Lightbox ---
+    const lb = document.getElementById('lb'), lbImg = document.getElementById('lb-img'), lbCap = document.getElementById('lb-cap');
+    let lbList = [], lbIdx = 0;
+    function lbShow(i){
+      lbIdx = (i + lbList.length) % lbList.length;
+      lbImg.src = lbList[lbIdx].src;
+      lbCap.textContent = lbList[lbIdx].cap;
+    }
+    document.querySelectorAll('.exp-row').forEach(row => {
+      const items = [...row.querySelectorAll('.exp-item img')];
+      items.forEach((img, i) => {
+        img.addEventListener('click', () => {
+          lbList = items.map(im => ({ src: im.src, cap: im.parentElement.querySelector('.cap')?.textContent || '' }));
+          lbShow(i);
+          lb.classList.add('open');
+        });
+      });
+    });
+    lb.querySelector('.lb-prev').addEventListener('click', e => { e.stopPropagation(); lbShow(lbIdx-1); });
+    lb.querySelector('.lb-next').addEventListener('click', e => { e.stopPropagation(); lbShow(lbIdx+1); });
+    lb.querySelector('.lb-close').addEventListener('click', () => lb.classList.remove('open'));
+    lb.addEventListener('click', e => { if (e.target === lb) lb.classList.remove('open'); });
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') lb.classList.remove('open');
+      if (e.key === 'ArrowLeft') lbShow(lbIdx-1);
+      if (e.key === 'ArrowRight') lbShow(lbIdx+1);
     });
 
     go(location.hash.slice(1) || 'home');
