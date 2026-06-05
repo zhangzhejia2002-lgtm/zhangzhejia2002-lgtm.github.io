@@ -1,14 +1,17 @@
 <!--
   ============================================================
   Zhejia Zhang — Personal Academic Homepage
+  Structure:
+   · HOME = a separate full-screen splash page.
+   · CONTENT = one scrolling page holding About / Publications /
+     News / Awards (with sticky sidebar). The four scroll together.
+   · Clicking Home shows the splash. Clicking About/Publications/
+     News/Awards shows the content page and scrolls to that block.
   ------------------------------------------------------------
   TO FILL IN:
-  · Photo → replace <div class="s-photo">Photo</div> with
-            <img src="me.jpg" alt="Zhejia Zhang" class="s-photo">
-  · Each paper thumbnail → replace <div class="thumb">Figure</div> with
+  · Paper thumbnail → replace <div class="thumb">Figure</div> with
             <img src="paper1.jpg" alt="" class="thumb">
-  · Latest paper (pub #1) → fill in title / authors / arXiv id / links
-  · LinkedIn → replace href="#" with your profile URL
+  · Latest paper (pub #1) → fill in title / authors / arXiv id
   · Colors → edit --panel (powder blue) / --accent in :root
   ============================================================
 -->
@@ -23,12 +26,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Hanken+Grotesk:wght@400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#E9E6DF;          /* warm greige base */
-    --bg-2:#F1EEE8;
-    --panel:#DCE7F4;       /* powder blue */
-    --panel-line:#BFD2E8;
+    --bg:#E9E6DF; --bg-2:#F1EEE8;
+    --panel:#DCE7F4; --panel-line:#BFD2E8;
     --ink:#2C313B; --ink-soft:#666C76; --ink-faint:#9AA0A8;
-    --accent:#5C7C9E; --accent-dp:#3F567A;   /* powder/dusty blue */
+    --accent:#5C7C9E; --accent-dp:#3F567A;
     --line:rgba(44,49,59,0.14);
     --sidebar:300px; --header:62px; --ease:cubic-bezier(0.16,1,0.3,1);
   }
@@ -39,20 +40,29 @@
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
   .serif{ font-family:"Fraunces",serif; } .script{ font-family:"Caveat",cursive; }
 
-  /* ===== Top header (no name, nav only) ===== */
+  /* ===== Top header ===== */
   .topbar{ position:sticky; top:0; z-index:60; height:var(--header); display:flex; align-items:center; justify-content:flex-end;
-    padding:0 40px; border-bottom:none; background:color-mix(in srgb,var(--bg) 84%,transparent); backdrop-filter:blur(10px);
-    transition:background .5s var(--ease), border-color .5s var(--ease); }
+    padding:0 40px; background:color-mix(in srgb,var(--bg) 80%,transparent); backdrop-filter:blur(10px); transition:background .5s var(--ease); }
   .topnav{ display:flex; gap:28px; }
   .topnav a{ font-size:14px; font-weight:600; color:var(--ink-soft); text-decoration:none; cursor:pointer; position:relative; transition:color .25s var(--ease); }
   .topnav a.active{ color:var(--ink); } .topnav a:hover{ color:var(--accent); }
   .topnav a.active::after{ content:""; position:absolute; left:0; bottom:-21px; width:100%; height:2px; background:var(--accent); }
 
-  /* ===== Shell ===== */
-  .shell{ display:flex; align-items:stretch; }
+  /* ===== HOME splash (its own page) ===== */
+  #home{ display:none; }
+  #home.show{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    min-height:calc(100vh - var(--header)); padding:0 56px; }
+  body.home-mode{ background:linear-gradient(165deg, #D7E4F3 0%, #E4E7E6 55%, var(--bg) 100%); }
+  body.home-mode .topbar{ background:transparent; }
+  #home .hi{ font-family:"Caveat",cursive; font-size:42px; color:var(--accent); line-height:1; }
+  #home h1{ font-family:"Fraunces",serif; font-weight:500; font-size:clamp(52px,9vw,110px); line-height:0.96; letter-spacing:-0.02em; color:var(--ink); margin-top:2px; }
+
+  /* ===== CONTENT page (sidebar + scrolling sections) ===== */
+  .shell{ display:none; }
+  .shell.show{ display:flex; align-items:flex-start; animation:fade .5s var(--ease); }
+  @keyframes fade{ from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;} }
   .sidebar{ position:sticky; top:var(--header); flex:0 0 var(--sidebar); width:var(--sidebar); align-self:flex-start;
-    min-height:calc(100vh - var(--header)); padding:62px 34px; border-right:none;
-    display:flex; flex-direction:column; gap:15px; }
+    padding:60px 34px; display:flex; flex-direction:column; gap:15px; }
   .s-photo{ width:100%; aspect-ratio:1/1; object-fit:cover; display:block; border:1px solid var(--line); box-shadow:0 14px 34px -18px rgba(44,49,59,.45);
     background:radial-gradient(120% 120% at 30% 20%, var(--bg-2), #d9d3c8 80%); color:var(--ink-faint); font-size:13px; }
   div.s-photo{ display:flex; align-items:center; justify-content:center; }
@@ -65,18 +75,15 @@
   .s-links svg{ width:17px; height:17px; flex:0 0 17px; color:var(--accent); }
 
   .main{ flex:1 1 auto; min-width:0; }
-  .page{ display:none; padding:62px 56px 92px; max-width:880px; }
-  .page.active{ display:block; animation:fade .55s var(--ease); }
-  @keyframes fade{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
+  .sec{ max-width:880px; padding:64px 56px; scroll-margin-top:var(--header); border-top:1px solid var(--line); }
+  .sec:first-child{ border-top:none; padding-top:60px; }
 
-  /* Section titles in blue */
-  .page h2{ font-family:"Caveat",cursive; font-weight:600; font-size:clamp(44px,5.6vw,60px); color:var(--accent); margin:0 0 26px; letter-spacing:-0.01em; line-height:1; }
-  .page h2 .it{ font-style:italic; color:var(--accent-dp); }
+  .sec h2{ font-family:"Caveat",cursive; font-weight:600; font-size:clamp(44px,5.6vw,60px); color:var(--accent); margin:0 0 26px; letter-spacing:-0.01em; line-height:1; }
+  .sec h2 .it{ font-style:italic; color:var(--accent-dp); }
   .prose p{ font-size:18px; line-height:1.78; color:var(--ink); margin-bottom:16px; }
   .prose strong{ font-weight:600; }
 
-  /* Interests | Education — no border / no background */
-  .cols{ display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-top:46px; }
+  .cols{ display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-top:40px; }
   .col-h{ font-family:"Fraunces",serif; font-weight:500; font-size:22px; color:var(--ink); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--line); }
   .col ul{ list-style:none; }
   .col li{ position:relative; padding-left:18px; margin-bottom:13px; font-size:16px; color:var(--ink); }
@@ -86,7 +93,6 @@
   .col .det{ font-size:14px; color:var(--ink-soft); }
   @media (max-width:640px){ .cols{ grid-template-columns:1fr; gap:32px; } }
 
-  /* Publications — thumbnail + body */
   .pub{ display:grid; grid-template-columns:160px 1fr; gap:28px; padding:26px 0; border-top:1px solid var(--line); transition:padding-left .35s var(--ease); }
   .pub:first-of-type{ border-top:none; padding-top:4px; } .pub:hover{ padding-left:8px; }
   .pub .thumb{ width:100%; aspect-ratio:4/3; object-fit:cover; display:block; border:1px solid var(--line);
@@ -100,51 +106,45 @@
   .pub .lk a:hover{ text-decoration:underline; text-underline-offset:3px; }
   @media (max-width:600px){ .pub{ grid-template-columns:1fr; gap:14px; } .pub .thumb{ max-width:220px; } }
 
-  /* News / Awards rows */
   .row{ display:grid; grid-template-columns:110px 1fr; gap:24px; align-items:baseline; padding:16px 0; border-top:1px solid var(--line); }
   .row:first-of-type{ border-top:none; padding-top:4px; }
   .row .d{ font-family:"Fraunces",serif; font-size:17px; color:var(--ink-soft); }
   .row strong{ font-weight:600; }
   @media (max-width:520px){ .row{ grid-template-columns:1fr; gap:4px; } }
 
-  /* ===== Home cover: greige ↔ powder-blue blend (splash, no sidebar) ===== */
-  .page.home{ max-width:none; padding:0; }
-  .page.home.active{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; min-height:calc(100vh - var(--header)); }
-  .home .hi{ font-family:"Caveat",cursive; font-size:42px; color:var(--accent); line-height:1; }
-  .home h1{ font-family:"Fraunces",serif; font-weight:500; font-size:clamp(52px,9vw,110px); line-height:0.96; letter-spacing:-0.02em; color:var(--ink); margin-top:2px; }
-
-  body.home-mode{ background:linear-gradient(140deg, #ECE7DA 0%, #E5E8E9 48%, #D7E4F3 100%); }
-  body.home-mode .topbar{ background:transparent; border-bottom-color:transparent; }
-  body.home-mode .sidebar{ display:none; }
-
-  /* ===== Responsive ===== */
   @media (max-width:860px){
     .topbar{ padding:0 22px; } .topnav{ gap:18px; } .topnav a.active::after{ bottom:-19px; }
-    .shell{ flex-direction:column; }
-    .sidebar{ position:static; width:auto; flex:none; min-height:0; flex-direction:row; flex-wrap:wrap; align-items:center; gap:16px 22px;
-      padding:24px 22px; border-right:none; border-bottom:1px solid var(--line); }
+    .shell.show{ flex-direction:column; }
+    .sidebar{ position:static; width:auto; flex:none; flex-direction:row; flex-wrap:wrap; align-items:center; gap:16px 22px;
+      padding:24px 22px; border-bottom:1px solid var(--line); }
     .s-photo{ width:84px; flex:0 0 84px; } .s-id{ flex:1 1 200px; }
     .s-links{ flex:1 1 100%; flex-direction:row; flex-wrap:wrap; gap:10px 20px; margin-top:0; }
-    .page{ padding:44px 22px 70px; }
+    .sec{ padding:48px 22px; }
   }
 </style>
 </head>
 <body>
 
-  <!-- ===== Top header (nav only) ===== -->
+  <!-- ===== Top header ===== -->
   <header class="topbar">
     <nav class="topnav">
-      <a data-page="home" class="active">Home</a>
-      <a data-page="about">About</a>
-      <a data-page="publications">Publications</a>
-      <a data-page="news">News</a>
-      <a data-page="awards">Awards</a>
+      <a data-go="home" class="active">Home</a>
+      <a data-go="about">About</a>
+      <a data-go="publications">Publications</a>
+      <a data-go="news">News</a>
+      <a data-go="awards">Awards</a>
     </nav>
   </header>
 
+  <!-- ===== HOME splash page ===== -->
+  <section id="home" class="show">
+    <div class="hi script">Hello, I'm</div>
+    <h1 class="serif">Zhejia Zhang</h1>
+  </section>
+
+  <!-- ===== CONTENT page ===== -->
   <div class="shell">
 
-    <!-- ===== Sidebar ===== -->
     <aside class="sidebar">
       <img src="me.jpg" alt="Zhejia Zhang" class="s-photo">
       <div class="s-id">
@@ -164,17 +164,9 @@
       </nav>
     </aside>
 
-    <!-- ===== Main ===== -->
     <main class="main">
 
-      <!-- Home -->
-      <section class="page home active" id="home">
-        <div class="hi script">Hello, I'm</div>
-        <h1>Zhejia Zhang</h1>
-      </section>
-
-      <!-- About -->
-      <section class="page" id="about">
+      <section class="sec" id="about">
         <h2>About <span class="it">me</span></h2>
         <div class="prose">
           <p>I'm now a graduate researcher in the <strong>AIMP-Lab at Northwestern University</strong>, advised by <strong>Prof.Bo Zhou</strong>, working on generative models for medical imaging translation and medical VLMs.</p>
@@ -199,41 +191,35 @@
         </div>
       </section>
 
-      <!-- Publications -->
-      <section class="page" id="publications">
+      <section class="sec" id="publications">
         <h2>Publications</h2>
-
-        <!-- Latest paper — PLACEHOLDER: send me the arXiv link and I'll fill it in -->
         <div class="pub">
           <div class="thumb">Figure</div>
           <div class="pub-body">
-            <div class="t">[ How Far Has AI Come in Liver Fibrosis Staging? A Large-Scale Real-World Dataset and Benchmark ]</div>
+            <div class="t">How Far Has AI Come in Liver Fibrosis Staging? A Large-Scale Real-World Dataset and Benchmark (Under Review)</div>
             <div class="m">Yuanye Liu, Nannan Shi, <strong>Zhejia Zhang</strong>, et al. (2026).</div>
-            <div class="lk"><a href="https://arxiv.org/abs/2605.25595" target="_blank" rel="noopener">arXiv</a></div>
+            <div class="lk"><a href="https://arxiv.org/abs/2605.25595" target="_blank" rel="noopener">Paper</a></div>
           </div>
         </div>
-
         <div class="pub">
           <img src="mmformer.jpg" alt="" class="thumb">
           <div class="pub-body">
             <div class="t">Improved mmFormer for Liver Fibrosis Staging via Missing-Modality Compensation</div>
             <div class="m"><strong>Zhejia Zhang</strong>, Junjie Wang, Le Zhang. (2025).</div>
             <span class="badge">MICCAI CARE25 · Oral · Top 16%</span>
-            <div class="lk"><a href="https://arxiv.org/abs/2509.16436" target="_blank" rel="noopener">arXiv</a><a href="https://github.com/zhangzhejia2002-lgtm/Delta-mmFormer" target="_blank" rel="noopener">GitHub</a></div>
+            <div class="lk"><a href="https://arxiv.org/abs/2509.16436" target="_blank" rel="noopener">Paper</a><a href="https://github.com/zhangzhejia2002-lgtm/Delta-mmFormer" target="_blank" rel="noopener">GitHub</a></div>
           </div>
         </div>
       </section>
 
-      <!-- News -->
-      <section class="page" id="news">
+      <section class="sec" id="news">
         <h2>News</h2>
         <div class="row"><div class="d">2026.02</div><div>Joined the <strong>AIMP-Lab</strong> at Northwestern University, advised by Prof.Bo Zhou.</div></div>
         <div class="row"><div class="d">2025.09</div><div>Paper accepted at the <strong>MICCAI CARE25 Challenge</strong> (Oral).</div></div>
         <div class="row"><div class="d">2025.06</div><div>Graduated from the University of Birmingham with <strong>First-Class Honours</strong>.</div></div>
       </section>
 
-      <!-- Awards -->
-      <section class="page" id="awards">
+      <section class="sec" id="awards">
         <h2>Awards</h2>
         <div class="row"><div class="d">2024</div><div>Electrical Engineering Achievement Scholarship, University of Birmingham.</div></div>
         <div class="row"><div class="d">2023</div><div>Engineering International Achievement Scholarship, University of Birmingham.</div></div>
@@ -244,18 +230,45 @@
   </div>
 
   <script>
-    const links = document.querySelectorAll('[data-page]');
-    const pages = document.querySelectorAll('.page');
-    function show(id){
-      if(!document.getElementById(id)) id='home';
-      pages.forEach(p=>p.classList.toggle('active', p.id===id));
-      links.forEach(a=>a.classList.toggle('active', a.dataset.page===id));
-      document.body.classList.toggle('home-mode', id==='home');
-      window.scrollTo(0,0);
+    const links = document.querySelectorAll('.topnav a');
+    const home  = document.getElementById('home');
+    const shell = document.querySelector('.shell');
+
+    function go(target){
+      const isHome = (target === 'home');
+      // switch between the two "pages"
+      home.classList.toggle('show', isHome);
+      shell.classList.toggle('show', !isHome);
+      document.body.classList.toggle('home-mode', isHome);
+      // jump to top, or to the chosen section inside the content page
+      if (isHome) {
+        window.scrollTo(0, 0);
+      } else {
+        const el = document.getElementById(target);
+        // wait a frame so the content page is displayed before scrolling
+        requestAnimationFrame(() => {
+          if (el) {
+            const y = el.getBoundingClientRect().top + window.scrollY - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header')) || 62);
+            window.scrollTo({ top: Math.max(y, 0), behavior: 'auto' });
+          } else { window.scrollTo(0, 0); }
+        });
+      }
+      links.forEach(a => a.classList.toggle('active', a.dataset.go === target));
     }
-    links.forEach(a=>a.addEventListener('click', e=>{ e.preventDefault(); location.hash=a.dataset.page; }));
-    window.addEventListener('hashchange', ()=>show(location.hash.slice(1)));
-    show(location.hash.slice(1) || 'home');
+
+    links.forEach(a => a.addEventListener('click', e => { e.preventDefault(); location.hash = a.dataset.go; }));
+    window.addEventListener('hashchange', () => go(location.hash.slice(1) || 'home'));
+
+    // Scroll-spy inside the content page: highlight the section in view
+    const io = new IntersectionObserver(entries => {
+      if (home.classList.contains('show')) return; // ignore while on splash
+      entries.forEach(e => {
+        if (e.isIntersecting) links.forEach(a => a.classList.toggle('active', a.dataset.go === e.target.id));
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    document.querySelectorAll('.sec[id]').forEach(s => io.observe(s));
+
+    go(location.hash.slice(1) || 'home');
   </script>
 </body>
 </html>
