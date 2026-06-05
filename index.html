@@ -3,9 +3,12 @@
   Zhejia Zhang — Personal Academic Homepage
   · HOME = a separate full-screen splash page (instant switch).
   · CONTENT = one scrolling page (About / Publications / News /
-    Awards) with sticky sidebar; nav smooth-scrolls within it.
+    Awards / Gallery) with sticky sidebar; nav smooth-scrolls.
   ------------------------------------------------------------
   · Paper thumbnail → <img src="paper1.jpg" alt="" class="thumb">
+  · Gallery photo → replace <div class="g-ph">Photo</div> with
+        <img src="life1.jpg" alt="" class="g-img">
+    and edit the caption under it.
   · Colors → edit --bg / --panel / --accent in :root
   ============================================================
 -->
@@ -46,7 +49,7 @@
   .topnav a.active{ color:var(--ink); } .topnav a:hover{ color:var(--accent); }
   .topnav a.active::after{ content:""; position:absolute; left:0; bottom:-21px; width:100%; height:2px; background:var(--accent); }
 
-  /* ===== HOME splash (instant switch, fixed one screen) ===== */
+  /* ===== HOME splash ===== */
   #home{ display:none; }
   #home.show{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
     min-height:calc(100vh - var(--header)); padding:0 56px; }
@@ -75,6 +78,8 @@
   .main{ flex:1 1 auto; min-width:0; }
   .sec{ max-width:880px; padding:40px 56px; scroll-margin-top:var(--header); }
   .sec:first-child{ padding-top:60px; }
+  /* Gallery needs more width than the 880px text column */
+  .sec.wide{ max-width:1000px; }
 
   .sec h2{ font-family:"Caveat",cursive; font-weight:600; font-size:clamp(44px,5.6vw,60px); color:var(--accent); margin:0 0 26px; letter-spacing:-0.01em; line-height:1; }
   .sec h2 .it{ font-style:italic; color:var(--accent); }
@@ -109,6 +114,20 @@
   .row strong{ font-weight:600; }
   @media (max-width:520px){ .row{ grid-template-columns:1fr; gap:4px; } }
 
+  /* ===== Gallery: horizontal scroll row ===== */
+  .gallery{ display:flex; gap:18px; overflow-x:auto; padding:4px 4px 18px; margin-top:8px;
+    scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; cursor:grab; }
+  .gallery::-webkit-scrollbar{ height:8px; }
+  .gallery::-webkit-scrollbar-thumb{ background:rgba(44,49,59,0.2); border-radius:99px; }
+  .gallery.grabbing{ cursor:grabbing; }
+  .g-item{ flex:0 0 260px; scroll-snap-align:start; }
+  .g-img, .g-ph{ width:100%; height:300px; object-fit:cover; display:block; border:1px solid var(--line);
+    box-shadow:0 14px 34px -18px rgba(44,49,59,.4); border-radius:2px; }
+  .g-ph{ background:radial-gradient(120% 120% at 30% 20%, var(--bg-2), #d9d3c8 80%);
+    display:flex; align-items:center; justify-content:center; color:var(--ink-faint); font-size:13px; }
+  .g-cap{ margin-top:10px; font-size:14px; color:var(--ink-soft); }
+  @media (max-width:520px){ .g-item{ flex:0 0 78vw; } .g-img,.g-ph{ height:64vw; } }
+
   @media (max-width:860px){
     .topbar{ padding:0 22px; } .topnav{ gap:18px; } .topnav a.active::after{ bottom:-19px; }
     .shell.show{ flex-direction:column; }
@@ -130,6 +149,7 @@
       <a data-go="publications">Publications</a>
       <a data-go="news">News</a>
       <a data-go="awards">Awards</a>
+      <a data-go="gallery">Gallery</a>
     </nav>
   </header>
 
@@ -222,6 +242,24 @@
         <div class="row"><div class="d">2022</div><div>Engineering International Excellence Scholarship, University of Birmingham.</div></div>
       </section>
 
+      <!-- ===== Gallery (horizontal scroll) ===== -->
+      <section class="sec wide" id="gallery">
+        <h2>Gallery</h2>
+        <p class="prose" style="margin-bottom:10px;color:var(--ink-soft);font-size:16px;">A few moments outside the lab — drag or swipe to browse.</p>
+        <div class="gallery">
+          <!-- Each .g-item: replace <div class="g-ph">Photo</div> with <img src="life1.jpg" alt="" class="g-img"> and edit the caption -->
+          <div class="g-item"><div class="g-ph">Photo 1</div><div class="g-cap">Caption</div></div>
+          <div class="g-item"><div class="g-ph">Photo 2</div><div class="g-cap">Caption</div></div>
+          <div class="g-item"><div class="g-ph">Photo 3</div><div class="g-cap">Caption</div></div>
+          <div class="g-item"><div class="g-ph">Photo 4</div><div class="g-cap">Caption</div></div>
+          <div class="g-item"><div class="g-ph">Photo 5</div><div class="g-cap">Caption</div></div>
+          <div class="g-item"><div class="g-ph">Photo 6</div><div class="g-cap">Caption</div></div>
+          <div class="g-item"><div class="g-ph">Photo 7</div><div class="g-cap">Caption</div></div>
+          <div class="g-item"><div class="g-ph">Photo 8</div><div class="g-cap">Caption</div></div>
+          <div class="g-item"><div class="g-ph">Photo 9</div><div class="g-cap">Caption</div></div>
+        </div>
+      </section>
+
     </main>
   </div>
 
@@ -238,7 +276,6 @@
       clearTimeout(navTimer);
       navTimer = setTimeout(() => { navLock = false; }, 800);
 
-      // instant switch between the two pages
       home.classList.toggle('show', isHome);
       shell.classList.toggle('show', !isHome);
       document.body.classList.toggle('home-mode', isHome);
@@ -249,9 +286,9 @@
         const el = document.getElementById(target);
         if (!el) { window.scrollTo(0, 0); }
         else if (wasContent) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });   // already in content → glide
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
-          window.scrollTo(0, 0);                                        // from Home → show, then glide
+          window.scrollTo(0, 0);
           requestAnimationFrame(() => requestAnimationFrame(() => {
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }));
@@ -270,6 +307,16 @@
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
     document.querySelectorAll('.sec[id]').forEach(s => io.observe(s));
+
+    // Gallery: drag to scroll with the mouse (touch already works)
+    const g = document.querySelector('.gallery');
+    if (g){
+      let down=false, startX, startL;
+      g.addEventListener('mousedown', e=>{ down=true; g.classList.add('grabbing'); startX=e.pageX; startL=g.scrollLeft; });
+      window.addEventListener('mouseup', ()=>{ down=false; g.classList.remove('grabbing'); });
+      g.addEventListener('mouseleave', ()=>{ down=false; g.classList.remove('grabbing'); });
+      g.addEventListener('mousemove', e=>{ if(!down) return; e.preventDefault(); g.scrollLeft = startL - (e.pageX - startX); });
+    }
 
     go(location.hash.slice(1) || 'home');
   </script>
