@@ -74,6 +74,8 @@
   .sec{ max-width:880px; padding:40px 56px; scroll-margin-top:var(--header); }
   .sec:first-child{ padding-top:60px; }
   .sec.wide{ max-width:1000px; }
+  .site-foot{ max-width:880px; padding:30px 56px 64px; font-size:13px; color:var(--ink-faint); display:flex; flex-wrap:wrap; gap:6px 20px; align-items:baseline; justify-content:space-between; }
+  .site-foot .foot-stats{ font-variant-numeric:tabular-nums; }
 
   .sec h2{ font-family:"Caveat",cursive; font-weight:600; font-size:clamp(44px,5.6vw,60px); color:var(--accent); margin:0 0 26px; letter-spacing:-0.01em; line-height:1; }
   .sec h2 .it{ font-style:italic; color:var(--accent); }
@@ -108,7 +110,7 @@
   @media (max-width:520px){ .row{ grid-template-columns:1fr; gap:4px; } }
 
   /* ===== Gallery: stacks that expand ===== */
-  .stacks{ display:flex; flex-wrap:wrap; justify-content:center; gap:65px 200px; margin-top:24px; width:100%; }
+  .stacks{ display:flex; flex-wrap:wrap; justify-content:center; gap:58px 100px; margin-top:24px; width:100%; }
   .stack{ width:min(250px, 100%); }
   .stack-deck{ position:relative; width:100%; aspect-ratio:1 / 1; height:auto; cursor:pointer; }
   .stack-deck .ph{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border:5px solid #fff; box-shadow:0 12px 26px -12px rgba(44,49,59,.5); border-radius:2px; transition:transform .45s var(--ease), box-shadow .45s var(--ease); backface-visibility:hidden; }
@@ -174,7 +176,8 @@
   .s-photo{ width:84px; flex:0 0 84px; }
   .s-id{ flex:1 1 200px; }
   .s-links{ flex:1 1 100%; flex-direction:row; flex-wrap:wrap; gap:10px 20px; margin-top:0; }
-  .sec{ padding:48px 22px; } }
+  .sec{ padding:48px 22px; }
+  .site-foot{ padding:30px 22px 48px; } }
   </style>
   </head>
   <body>
@@ -368,6 +371,11 @@
         </div>
       </section>
 
+      <footer class="site-foot">
+        <span class="foot-copy">© <span id="foot-year">2026</span> Zhejia Zhang</span>
+        <span class="foot-stats">Visits <span id="vercount_value_site_pv">…</span> · Visitors <span id="vercount_value_site_uv">…</span></span>
+      </footer>
+
     </main>
   </div>
 
@@ -459,6 +467,10 @@
     });
 
     go(location.hash.slice(1) || 'home');
+
+    const fy = document.getElementById('foot-year');
+    if (fy) fy.textContent = new Date().getFullYear();
   </script>
+  <script defer src="https://events.vercount.one/js"></script>
 </body>
 </html>
