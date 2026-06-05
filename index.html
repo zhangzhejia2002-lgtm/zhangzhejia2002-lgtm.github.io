@@ -245,13 +245,11 @@
         window.scrollTo(0, 0);
       } else {
         const el = document.getElementById(target);
-        // wait a frame so the content page is displayed before scrolling
-        requestAnimationFrame(() => {
-          if (el) {
-            const y = el.getBoundingClientRect().top + window.scrollY - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header')) || 62);
-            window.scrollTo({ top: Math.max(y, 0), behavior: 'auto' });
-          } else { window.scrollTo(0, 0); }
-        });
+        // 切到顶部，等两帧让内容页排好版再定位，避免算偏滑过头
+        window.scrollTo(0, 0);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          if (el) el.scrollIntoView({ behavior: 'auto', block: 'start' });
+        }));
       }
       links.forEach(a => a.classList.toggle('active', a.dataset.go === target));
     }
