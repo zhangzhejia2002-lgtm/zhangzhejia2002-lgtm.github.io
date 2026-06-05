@@ -41,7 +41,7 @@
 
   /* ===== Top header (no name, nav only) ===== */
   .topbar{ position:sticky; top:0; z-index:60; height:var(--header); display:flex; align-items:center; justify-content:flex-end;
-    padding:0 40px; border-bottom:1px solid var(--line); background:color-mix(in srgb,var(--bg) 84%,transparent); backdrop-filter:blur(10px);
+    padding:0 40px; border-bottom:none; background:color-mix(in srgb,var(--bg) 84%,transparent); backdrop-filter:blur(10px);
     transition:background .5s var(--ease), border-color .5s var(--ease); }
   .topnav{ display:flex; gap:28px; }
   .topnav a{ font-size:14px; font-weight:600; color:var(--ink-soft); text-decoration:none; cursor:pointer; position:relative; transition:color .25s var(--ease); }
@@ -51,7 +51,7 @@
   /* ===== Shell ===== */
   .shell{ display:flex; align-items:stretch; }
   .sidebar{ position:sticky; top:var(--header); flex:0 0 var(--sidebar); width:var(--sidebar); align-self:flex-start;
-    min-height:calc(100vh - var(--header)); padding:48px 34px; border-right:1px solid var(--line);
+    min-height:calc(100vh - var(--header)); padding:48px 34px; border-right:none;
     display:flex; flex-direction:column; gap:15px; }
   .s-photo{ width:100%; aspect-ratio:1/1; object-fit:cover; display:block; border:1px solid var(--line); box-shadow:0 14px 34px -18px rgba(44,49,59,.45);
     background:radial-gradient(120% 120% at 30% 20%, var(--bg-2), #d9d3c8 80%); color:var(--ink-faint); font-size:13px; }
