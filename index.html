@@ -5,10 +5,8 @@
   · CONTENT = one scrolling page (About / Publications / News /
     Awards / Gallery) with sticky sidebar; nav smooth-scrolls.
   ------------------------------------------------------------
-  · Paper thumbnail → <img src="paper1.jpg" alt="" class="thumb">
-  · Gallery photo → replace <div class="g-ph">Photo</div> with
-        <img src="life1.jpg" alt="" class="g-img">
-    and edit the caption under it.
+  · Gallery: photos are 1.jpg … 15.jpg in the repo root.
+    Edit each <div class="g-cap"> caption as you like.
   · Colors → edit --bg / --panel / --accent in :root
   ============================================================
 -->
@@ -78,7 +76,6 @@
   .main{ flex:1 1 auto; min-width:0; }
   .sec{ max-width:880px; padding:40px 56px; scroll-margin-top:var(--header); }
   .sec:first-child{ padding-top:60px; }
-  /* Gallery needs more width than the 880px text column */
   .sec.wide{ max-width:1000px; }
 
   .sec h2{ font-family:"Caveat",cursive; font-weight:600; font-size:clamp(44px,5.6vw,60px); color:var(--accent); margin:0 0 26px; letter-spacing:-0.01em; line-height:1; }
@@ -242,21 +239,26 @@
         <div class="row"><div class="d">2022</div><div>Engineering International Excellence Scholarship, University of Birmingham.</div></div>
       </section>
 
-      <!-- ===== Gallery (horizontal scroll) ===== -->
+      <!-- ===== Gallery (horizontal scroll, 1.jpg – 15.jpg) ===== -->
       <section class="sec wide" id="gallery">
         <h2>Gallery</h2>
-        <p class="prose" style="margin-bottom:10px;color:var(--ink-soft);font-size:16px;">A few moments outside the lab — drag or swipe to browse.</p>
+        <p class="prose" style="margin-bottom:10px;color:var(--ink-soft);font-size:16px;">The Moments Writ in the Book of Life.</p>
         <div class="gallery">
-          <!-- Each .g-item: replace <div class="g-ph">Photo</div> with <img src="life1.jpg" alt="" class="g-img"> and edit the caption -->
-          <div class="g-item"><div class="g-ph">Photo 1</div><div class="g-cap">Caption</div></div>
-          <div class="g-item"><div class="g-ph">Photo 2</div><div class="g-cap">Caption</div></div>
-          <div class="g-item"><div class="g-ph">Photo 3</div><div class="g-cap">Caption</div></div>
-          <div class="g-item"><div class="g-ph">Photo 4</div><div class="g-cap">Caption</div></div>
-          <div class="g-item"><div class="g-ph">Photo 5</div><div class="g-cap">Caption</div></div>
-          <div class="g-item"><div class="g-ph">Photo 6</div><div class="g-cap">Caption</div></div>
-          <div class="g-item"><div class="g-ph">Photo 7</div><div class="g-cap">Caption</div></div>
-          <div class="g-item"><div class="g-ph">Photo 8</div><div class="g-cap">Caption</div></div>
-          <div class="g-item"><div class="g-ph">Photo 9</div><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="1.jpg"  alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="2.jpg"  alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="3.jpg"  alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="4.jpg"  alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="5.jpg"  alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="6.jpg"  alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="7.jpg"  alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="8.jpg"  alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="9.jpg"  alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="10.jpg" alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="11.jpg" alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="12.jpg" alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="13.jpg" alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="14.jpg" alt="" class="g-img"><div class="g-cap">Caption</div></div>
+          <div class="g-item"><img src="15.jpg" alt="" class="g-img"><div class="g-cap">Caption</div></div>
         </div>
       </section>
 
