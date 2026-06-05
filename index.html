@@ -4,15 +4,11 @@
   Structure:
    · HOME = a separate full-screen splash page.
    · CONTENT = one scrolling page holding About / Publications /
-     News / Awards (with sticky sidebar). The four scroll together.
-   · Clicking Home shows the splash. Clicking About/Publications/
-     News/Awards shows the content page and scrolls to that block.
+     News / Awards (with sticky sidebar).
+   · Home <-> Content cross-fade; nav smooth-scrolls within content.
   ------------------------------------------------------------
-  TO FILL IN:
-  · Paper thumbnail → replace <div class="thumb">Figure</div> with
-            <img src="paper1.jpg" alt="" class="thumb">
-  · Latest paper (pub #1) → fill in title / authors / arXiv id
-  · Colors → edit --panel (powder blue) / --accent in :root
+  · Paper thumbnail → <img src="paper1.jpg" alt="" class="thumb">
+  · Colors → edit --bg / --panel / --accent in :root
   ============================================================
 -->
 <!DOCTYPE html>
@@ -36,9 +32,9 @@
     --sidebar:300px; --header:62px; --ease:cubic-bezier(0.16,1,0.3,1);
   }
   *{ margin:0; padding:0; box-sizing:border-box; }
-  html{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
-  html{ scroll-behavior:smooth; }
-  body{ font-family:"Hanken Grotesk",-apple-system,sans-serif; color:var(--ink); line-height:1.62; font-size:16px; transition:background .5s var(--ease); }
+  html{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; scroll-behavior:smooth; background:var(--bg); min-height:100%; }
+  body{ font-family:"Hanken Grotesk",-apple-system,sans-serif; color:var(--ink); line-height:1.62; font-size:16px; background:var(--bg); min-height:100%; transition:background .5s var(--ease); }
+  body.home-mode{ background:linear-gradient(to bottom right,var(--bg) 0%,var(--bg) 50%,#D7E4F3 100%); background-attachment:fixed; }
   body::after{ content:""; position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:0.04; mix-blend-mode:multiply;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
   .serif{ font-family:"Fraunces",serif; } .script{ font-family:"Caveat",cursive; }
@@ -46,36 +42,35 @@
   /* ===== Top header ===== */
   .topbar{ position:sticky; top:0; z-index:60; height:var(--header); display:flex; align-items:center; justify-content:flex-end;
     padding:0 40px; background:color-mix(in srgb,var(--bg) 80%,transparent); backdrop-filter:blur(10px); transition:background .5s var(--ease); }
+  body.home-mode .topbar{ background:transparent; }
   .topnav{ display:flex; gap:28px; }
   .topnav a{ font-size:14px; font-weight:600; color:var(--ink-soft); text-decoration:none; cursor:pointer; position:relative; transition:color .25s var(--ease); }
   .topnav a.active{ color:var(--ink); } .topnav a:hover{ color:var(--accent); }
   .topnav a.active::after{ content:""; position:absolute; left:0; bottom:-21px; width:100%; height:2px; background:var(--accent); }
 
-  /* ===== HOME splash (its own page) ===== */
-  #home{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
-  min-height:calc(100vh - var(--header)); padding:0 56px;
-  opacity:0; visibility:hidden; transition:opacity .5s var(--ease), visibility .5s; }
-  #home.show{ opacity:1; visibility:visible; }
-  body.home-mode #home.show{transform:translateY(-6vh);}
-  html{background:var(--bg);min-height:100%;}
-  body{background:var(--bg);min-height:100%;}
-  body.home-mode{background:linear-gradient(to bottom right,var(--bg) 0%,var(--bg) 50%,#D7E4F3 100%);background-attachment:fixed;}
-  body.home-mode .topbar{background:transparent;}
+  /* ===== Stage: holds both "pages" stacked, for cross-fade ===== */
+  .stage{ position:relative; }
+
+  /* ----- HOME splash ----- */
+  #home{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    min-height:calc(100vh - var(--header)); padding:0 56px;
+    opacity:0; visibility:hidden; pointer-events:none; transition:opacity .55s var(--ease), visibility .55s; }
+  #home.show{ opacity:1; visibility:visible; pointer-events:auto; }
+  body.home-mode #home.show{ transform:translateY(-6vh); }
   #home .hi{ font-family:"Caveat",cursive; font-size:42px; color:var(--accent); line-height:1; }
   #home h1{ font-family:"Caveat",cursive; font-weight:500; font-size:clamp(52px,9vw,110px); line-height:0.96; letter-spacing:-0.02em; color:var(--ink); margin-top:2px; }
-  
-  /* ===== CONTENT page (sidebar + scrolling sections) ===== */
-  .shell{ display:flex; align-items:flex-start; max-width:1200px; width:100%; margin:0 auto;
-  opacity:0; visibility:hidden; transition:opacity .5s var(--ease), visibility .5s; }
-  .shell.show{ opacity:1; visibility:visible; }
-  #home, .shell{ position:absolute; left:0; right:0; }
-  @keyframes fade{ from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;} }
+
+  /* ----- CONTENT page ----- */
+  .shell{ position:relative; display:flex; align-items:flex-start; max-width:1200px; width:100%; margin:0 auto;
+    opacity:0; visibility:hidden; pointer-events:none; transition:opacity .55s var(--ease), visibility .55s; }
+  .shell.show{ opacity:1; visibility:visible; pointer-events:auto; }
+
   .sidebar{ position:sticky; top:var(--header); flex:0 0 var(--sidebar); width:var(--sidebar); align-self:flex-start;
     padding:60px 34px; display:flex; flex-direction:column; gap:15px; }
   .s-photo{ width:100%; aspect-ratio:1/1; object-fit:cover; display:block; border:1px solid var(--line); box-shadow:0 14px 34px -18px rgba(44,49,59,.45);
     background:radial-gradient(120% 120% at 30% 20%, var(--bg-2), #d9d3c8 80%); color:var(--ink-faint); font-size:13px; }
   div.s-photo{ display:flex; align-items:center; justify-content:center; }
-  .s-name{ font-family:"Hanken Grotesk",serif; font-weight:500; font-size:26px; line-height:1.05; color:var(--ink); margin-top:4px; }
+  .s-name{ font-family:"Hanken Grotesk",sans-serif; font-weight:600; font-size:26px; line-height:1.05; color:var(--ink); margin-top:4px; }
   .s-role{ font-size:14px; color:var(--accent); font-weight:700; }
   .s-affil{ font-size:14px; color:var(--ink-soft); line-height:1.5; }
   .s-links{ margin-top:8px; display:flex; flex-direction:column; gap:11px; }
@@ -85,7 +80,7 @@
 
   .main{ flex:1 1 auto; min-width:0; }
   .sec{ max-width:880px; padding:40px 56px; scroll-margin-top:var(--header); }
-  .sec:first-child{ border-top:none; padding-top:60px; }
+  .sec:first-child{ padding-top:60px; }
 
   .sec h2{ font-family:"Caveat",cursive; font-weight:600; font-size:clamp(44px,5.6vw,60px); color:var(--accent); margin:0 0 26px; letter-spacing:-0.01em; line-height:1; }
   .sec h2 .it{ font-style:italic; color:var(--accent); }
@@ -93,7 +88,7 @@
   .prose strong{ font-weight:600; }
 
   .cols{ display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-top:40px; }
-  .col-h{ font-family:"Hanken Grotesk",serif; font-weight:500; font-size:22px; color:var(--ink); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--line); }
+  .col-h{ font-family:"Hanken Grotesk",sans-serif; font-weight:700; font-size:20px; color:var(--ink); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--line); }
   .col ul{ list-style:none; }
   .col li{ position:relative; padding-left:18px; margin-bottom:13px; font-size:16px; color:var(--ink); }
   .col li:last-child{ margin-bottom:0; }
@@ -102,17 +97,16 @@
   .col .det{ font-size:14px; color:var(--ink-soft); }
   @media (max-width:640px){ .cols{ grid-template-columns:1fr; gap:32px; } }
 
-  .pub{ display:grid; grid-template-columns:160px 1fr; gap:28px; padding:26px 0; border-top:1px solid var(--line); transition:padding-left .35s var(--ease); }
+  .pub{ display:grid; grid-template-columns:180px 1fr; gap:28px; padding:26px 0; border-top:1px solid var(--line); transition:padding-left .35s var(--ease); }
   .pub:first-of-type{ border-top:none; padding-top:4px; } .pub:hover{ padding-left:8px; }
-  .pub{display:grid;grid-template-columns:180px 1fr;gap:28px;padding:26px 0;border-top:1px solid var(--line);transition:padding-left .35s var(--ease);}
-  .pub img.thumb{width:100%;height:110px;object-fit:contain;display:block;border:1px solid var(--line);background:transparent;}
-  .pub div.thumb{width:100%;height:110px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:transparent;color:var(--accent-dp);font-size:12px;}
+  .pub img.thumb{ width:100%; height:110px; object-fit:contain; display:block; border:1px solid var(--line); background:transparent; }
+  .pub div.thumb{ width:100%; height:110px; display:flex; align-items:center; justify-content:center; border:1px solid var(--line); background:transparent; color:var(--accent-dp); font-size:12px; }
   .pub .t{ font-size:18px; font-weight:600; color:var(--ink); }
   .pub .m{ font-size:15px; color:var(--ink-soft); margin-top:4px; } .pub .m .it{ font-style:italic; } .pub strong{ color:var(--ink); }
-  .pub .badge{display:inline-block;margin-top:9px;font-size:12px;font-weight:600;color:var(--accent);background:none;border:none;padding:0;border-radius:0;}
-  .pub .t .title-links{display:inline-flex;gap:6px;margin-left:6px;white-space:nowrap;vertical-align:baseline;}
-  .pub .t .title-links a{font-size:inherit;font-weight:inherit;color:var(--accent);text-decoration:none;margin-left:0;}
-  .pub .t .title-links a:hover{text-decoration:underline;text-underline-offset:3px;}
+  .pub .badge{ display:inline-block; margin-top:9px; font-size:12px; font-weight:600; color:var(--accent); }
+  .pub .t .title-links{ display:inline-flex; gap:6px; margin-left:6px; white-space:nowrap; vertical-align:baseline; }
+  .pub .t .title-links a{ font-size:inherit; font-weight:inherit; color:var(--accent); text-decoration:none; }
+  .pub .t .title-links a:hover{ text-decoration:underline; text-underline-offset:3px; }
   @media (max-width:600px){ .pub{ grid-template-columns:1fr; gap:14px; } .pub .thumb{ max-width:220px; } }
 
   .row{ display:grid; grid-template-columns:110px 1fr; gap:24px; align-items:baseline; padding:16px 0; border-top:1px solid var(--line); }
@@ -145,96 +139,101 @@
     </nav>
   </header>
 
-  <!-- ===== HOME splash page ===== -->
-  <section id="home" class="show">
-    <div class="hi script">Hello, I'm</div>
-    <h1 class="serif">Zhejia Zhang</h1>
-  </section>
+  <!-- ===== Stage: both pages live here, cross-fade between them ===== -->
+  <div class="stage">
 
-  <!-- ===== CONTENT page ===== -->
-  <div class="shell">
+    <!-- HOME splash -->
+    <section id="home" class="show">
+      <div class="hi script">Hello, I'm</div>
+      <h1 class="serif">Zhejia Zhang</h1>
+    </section>
 
-    <aside class="sidebar">
-      <img src="me.jpg" alt="Zhejia Zhang" class="s-photo">
-      <div class="s-id">
-        <div class="s-name">Zhejia Zhang</div>
-        <div class="s-role">Graduate Researcher</div>
-        <div class="s-affil">AIMP-Lab, Northwestern University</div>
-      </div>
-      <nav class="s-links">
-        <a href="mailto:zhejiazhang2026@u.northwestern.edu">
-          <i class="fa-solid fa-envelope"></i>Email</a>
-        <a href="https://scholar.google.com/citations?user=pd7WZh8AAAAJ" target="_blank" rel="noopener">
-          <i class="fa-brands fa-google-scholar"></i>Google Scholar</a>
-        <a href="https://github.com/zhangzhejia2002-lgtm" target="_blank" rel="noopener">
-          <i class="fa-brands fa-github"></i>GitHub</a>
-        <a href="https://www.linkedin.com/in/zhejia-zhang-713454330/" target="_blank" rel="noopener">
-          <i class="fa-brands fa-linkedin-in"></i>LinkedIn</a>
-      </nav>
-    </aside>
+    <!-- CONTENT page -->
+    <div class="shell">
 
-    <main class="main">
-
-      <section class="sec" id="about">
-        <h2>About <span class="it">me</span></h2>
-        <div class="prose">
-          <p>I'm now a graduate researcher in the <strong>AIMP-Lab at Northwestern University</strong>, advised by <strong>Prof.Bo Zhou</strong>, working on generative models for medical imaging translation and medical VLMs.</p>
-          <p>I earned my B.Eng. in Electronic and Electrical Engineering from the <strong>University of Birmingham</strong>, where I worked with <strong>Prof.Le Zhang</strong>.</p>
+      <aside class="sidebar">
+        <img src="me.jpg" alt="Zhejia Zhang" class="s-photo">
+        <div class="s-id">
+          <div class="s-name">Zhejia Zhang</div>
+          <div class="s-role">Graduate Researcher</div>
+          <div class="s-affil">AIMP-Lab, Northwestern University</div>
         </div>
-        <div class="cols">
-          <div class="col">
-            <div class="col-h">Interests</div>
-            <ul>
-              <li>Generative AI</li>
-              <li>Medical VLMs</li>
-              <li>Medical Image Analysis</li>
-            </ul>
-          </div>
-          <div class="col">
-            <div class="col-h">Education</div>
-            <ul>
-              <li><span class="deg">M.S. in Electrical Engineering</span><br><span class="det">Northwestern University, USA</span></li>
-              <li><span class="deg">B.Eng. in Electronic &amp; Electrical Engineering</span><br><span class="det">University of Birmingham, UK</span></li>
-            </ul>
-          </div>
-        </div>
-      </section>
+        <nav class="s-links">
+          <a href="mailto:zhejiazhang2026@u.northwestern.edu">
+            <i class="fa-solid fa-envelope"></i>Email</a>
+          <a href="https://scholar.google.com/citations?user=pd7WZh8AAAAJ" target="_blank" rel="noopener">
+            <i class="fa-brands fa-google-scholar"></i>Google Scholar</a>
+          <a href="https://github.com/zhangzhejia2002-lgtm" target="_blank" rel="noopener">
+            <i class="fa-brands fa-github"></i>GitHub</a>
+          <a href="https://www.linkedin.com/in/zhejia-zhang-713454330/" target="_blank" rel="noopener">
+            <i class="fa-brands fa-linkedin-in"></i>LinkedIn</a>
+        </nav>
+      </aside>
 
-      <section class="sec" id="publications">
-        <h2>Publications</h2>
-        <div class="pub">
-          <img src="LiFS_data_page-0001.jpg" alt="" class="thumb">
-          <div class="pub-body">
-            <div class="t">How Far Has AI Come in Liver Fibrosis Staging? A Large-Scale Real-World Dataset and Benchmark<span class="title-links"><a href="https://arxiv.org/abs/2605.25595" target="_blank" rel="noopener">[Paper]</a></span></div>
-            <div class="m">Yuanye Liu, Nannan Shi, <strong>Zhejia Zhang</strong>, Hanxiao Zhang, Boya Wang, Derong Yu, Nao Wang, Yuxin Jin, Yang Zhou, Kunhao Yuan, Siqi Wang, Lida Yang, Xu Qiao, Wentao Liu, Xuelei He, Xin Hong, Guoyan Zheng, Xin Chen, Guang-Zhong Yang, Le Zhang, Lei Li, Yuxin Shi, Xiahai Zhuang.</div>
-            <span class="badge">arXiv Preprint 2026</span>
+      <main class="main">
+
+        <section class="sec" id="about">
+          <h2>About <span class="it">me</span></h2>
+          <div class="prose">
+            <p>I'm now a graduate researcher in the <strong>AIMP-Lab at Northwestern University</strong>, advised by <strong>Prof.Bo Zhou</strong>, working on generative models for medical imaging translation and medical VLMs.</p>
+            <p>I earned my B.Eng. in Electronic and Electrical Engineering from the <strong>University of Birmingham</strong>, where I worked with <strong>Prof.Le Zhang</strong>.</p>
           </div>
-        </div>
-        <div class="pub">
-          <img src="mmformer.jpg" alt="" class="thumb">
-          <div class="pub-body">
-            <div class="t">Improved mmFormer for Liver Fibrosis Staging via Missing-Modality Compensation<span class="title-links"><a href="https://arxiv.org/abs/2509.16436" target="_blank" rel="noopener">[Paper]</a><a href="https://github.com/zhangzhejia2002-lgtm/Delta-mmFormer" target="_blank" rel="noopener">[GitHub]</a></span></div>
-            <div class="m"><strong>Zhejia Zhang</strong>, Junjie Wang, Le Zhang.</div>
-            <span class="badge">MICCAI CARE 2025 · Oral · Top 16%</span>
+          <div class="cols">
+            <div class="col">
+              <div class="col-h">Interests</div>
+              <ul>
+                <li>Generative AI</li>
+                <li>Medical VLMs</li>
+                <li>Medical Image Analysis</li>
+              </ul>
+            </div>
+            <div class="col">
+              <div class="col-h">Education</div>
+              <ul>
+                <li><span class="deg">M.S. in Electrical Engineering</span><br><span class="det">Northwestern University, USA</span></li>
+                <li><span class="deg">B.Eng. in Electronic &amp; Electrical Engineering</span><br><span class="det">University of Birmingham, UK</span></li>
+              </ul>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="sec" id="news">
-        <h2>News</h2>
-        <div class="row"><div class="d">2026.02</div><div>Joined the <strong>AIMP-Lab</strong> at Northwestern University, advised by Prof.Bo Zhou.</div></div>
-        <div class="row"><div class="d">2025.09</div><div>Paper accepted at the <strong>MICCAI CARE25 Challenge</strong> (Oral).</div></div>
-        <div class="row"><div class="d">2025.06</div><div>Graduated from the University of Birmingham with <strong>First-Class Honours</strong>.</div></div>
-      </section>
+        <section class="sec" id="publications">
+          <h2>Publications</h2>
+          <div class="pub">
+            <img src="LiFS_data_page-0001.jpg" alt="" class="thumb">
+            <div class="pub-body">
+              <div class="t">How Far Has AI Come in Liver Fibrosis Staging? A Large-Scale Real-World Dataset and Benchmark<span class="title-links"><a href="https://arxiv.org/abs/2605.25595" target="_blank" rel="noopener">[Paper]</a></span></div>
+              <div class="m">Yuanye Liu, Nannan Shi, <strong>Zhejia Zhang</strong>, Hanxiao Zhang, Boya Wang, Derong Yu, Nao Wang, Yuxin Jin, Yang Zhou, Kunhao Yuan, Siqi Wang, Lida Yang, Xu Qiao, Wentao Liu, Xuelei He, Xin Hong, Guoyan Zheng, Xin Chen, Guang-Zhong Yang, Le Zhang, Lei Li, Yuxin Shi, Xiahai Zhuang.</div>
+              <span class="badge">arXiv Preprint 2026</span>
+            </div>
+          </div>
+          <div class="pub">
+            <img src="mmformer.jpg" alt="" class="thumb">
+            <div class="pub-body">
+              <div class="t">Improved mmFormer for Liver Fibrosis Staging via Missing-Modality Compensation<span class="title-links"><a href="https://arxiv.org/abs/2509.16436" target="_blank" rel="noopener">[Paper]</a><a href="https://github.com/zhangzhejia2002-lgtm/Delta-mmFormer" target="_blank" rel="noopener">[GitHub]</a></span></div>
+              <div class="m"><strong>Zhejia Zhang</strong>, Junjie Wang, Le Zhang.</div>
+              <span class="badge">MICCAI CARE 2025 · Oral · Top 16%</span>
+            </div>
+          </div>
+        </section>
 
-      <section class="sec" id="awards">
-        <h2>Awards</h2>
-        <div class="row"><div class="d">2024</div><div>Electrical Engineering Achievement Scholarship, University of Birmingham.</div></div>
-        <div class="row"><div class="d">2023</div><div>Engineering International Achievement Scholarship, University of Birmingham.</div></div>
-        <div class="row"><div class="d">2022</div><div>Engineering International Excellence Scholarship, University of Birmingham.</div></div>
-      </section>
+        <section class="sec" id="news">
+          <h2>News</h2>
+          <div class="row"><div class="d">2026.02</div><div>Joined the <strong>AIMP-Lab</strong> at Northwestern University, advised by Prof.Bo Zhou.</div></div>
+          <div class="row"><div class="d">2025.09</div><div>Paper accepted at the <strong>MICCAI CARE25 Challenge</strong> (Oral).</div></div>
+          <div class="row"><div class="d">2025.06</div><div>Graduated from the University of Birmingham with <strong>First-Class Honours</strong>.</div></div>
+        </section>
 
-    </main>
+        <section class="sec" id="awards">
+          <h2>Awards</h2>
+          <div class="row"><div class="d">2024</div><div>Electrical Engineering Achievement Scholarship, University of Birmingham.</div></div>
+          <div class="row"><div class="d">2023</div><div>Engineering International Achievement Scholarship, University of Birmingham.</div></div>
+          <div class="row"><div class="d">2022</div><div>Engineering International Excellence Scholarship, University of Birmingham.</div></div>
+        </section>
+
+      </main>
+    </div>
+
   </div>
 
   <script>
@@ -245,31 +244,31 @@
 
     function go(target){
       const isHome = (target === 'home');
+      const wasContent = shell.classList.contains('show');
       navLock = true;
       clearTimeout(navTimer);
       navTimer = setTimeout(() => { navLock = false; }, 800);
-      // switch between the two "pages"
+
+      // cross-fade between the two pages
       home.classList.toggle('show', isHome);
       shell.classList.toggle('show', !isHome);
       document.body.classList.toggle('home-mode', isHome);
-      // jump to top, or to the chosen section inside the content page
+
       if (isHome) {
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: 0, behavior: 'auto' });
       } else {
         const el = document.getElementById(target);
-        // 切到顶部，等两帧让内容页排好版再定位，避免算偏滑过头
-        const wasContent = shell.classList.contains('show');
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          if (!el) return;
-          if (wasContent) {
-            // 已经在内容页内：平滑滑过去
+        if (!el) { window.scrollTo(0, 0); }
+        else if (wasContent) {
+          // already inside content → smooth-glide to the section
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          // coming from Home → wait for the content page to fade in, then glide
+          window.scrollTo(0, 0);
+          requestAnimationFrame(() => requestAnimationFrame(() => {
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          } else {
-            // 刚从 Home 切进内容页：先到顶再平滑滑到目标
-            window.scrollTo(0, 0);
-            requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }));
-          }
-        }));
+          }));
+        }
       }
       links.forEach(a => a.classList.toggle('active', a.dataset.go === target));
     }
@@ -277,10 +276,9 @@
     links.forEach(a => a.addEventListener('click', e => { e.preventDefault(); location.hash = a.dataset.go; }));
     window.addEventListener('hashchange', () => go(location.hash.slice(1) || 'home'));
 
-    // Scroll-spy inside the content page: highlight the section in view
+    // Scroll-spy inside the content page
     const io = new IntersectionObserver(entries => {
-      if (home.classList.contains('show')) return; // ignore while on splash
-      if (navLock) return; // 点击切换后 0.8s 内不让滚动高亮抢
+      if (home.classList.contains('show') || navLock) return;
       entries.forEach(e => {
         if (e.isIntersecting) links.forEach(a => a.classList.toggle('active', a.dataset.go === e.target.id));
       });
