@@ -1,0 +1,261 @@
+<!--
+  ============================================================
+  Zhejia Zhang — Personal Academic Homepage
+  ------------------------------------------------------------
+  TO FILL IN:
+  · Photo → replace <div class="s-photo">Photo</div> with
+            <img src="me.jpg" alt="Zhejia Zhang" class="s-photo">
+  · Each paper thumbnail → replace <div class="thumb">Figure</div> with
+            <img src="paper1.jpg" alt="" class="thumb">
+  · Latest paper (pub #1) → fill in title / authors / arXiv id / links
+  · LinkedIn → replace href="#" with your profile URL
+  · Colors → edit --panel (powder blue) / --accent in :root
+  ============================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zhejia Zhang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Hanken+Grotesk:wght@400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E9E6DF;          /* warm greige base */
+    --bg-2:#F1EEE8;
+    --panel:#DCE7F4;       /* powder blue */
+    --panel-line:#BFD2E8;
+    --ink:#2C313B; --ink-soft:#666C76; --ink-faint:#9AA0A8;
+    --accent:#5C7C9E; --accent-dp:#3F567A;   /* powder/dusty blue */
+    --line:rgba(44,49,59,0.14);
+    --sidebar:300px; --header:62px; --ease:cubic-bezier(0.16,1,0.3,1);
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+  body{ font-family:"Hanken Grotesk",-apple-system,sans-serif; background:var(--bg); color:var(--ink); line-height:1.62; font-size:16px; transition:background .5s var(--ease); }
+  body::after{ content:""; position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:0.04; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .serif{ font-family:"Fraunces",serif; } .script{ font-family:"Caveat",cursive; }
+
+  /* ===== Top header (no name, nav only) ===== */
+  .topbar{ position:sticky; top:0; z-index:60; height:var(--header); display:flex; align-items:center; justify-content:flex-end;
+    padding:0 40px; border-bottom:1px solid var(--line); background:color-mix(in srgb,var(--bg) 84%,transparent); backdrop-filter:blur(10px);
+    transition:background .5s var(--ease), border-color .5s var(--ease); }
+  .topnav{ display:flex; gap:28px; }
+  .topnav a{ font-size:14px; font-weight:600; color:var(--ink-soft); text-decoration:none; cursor:pointer; position:relative; transition:color .25s var(--ease); }
+  .topnav a.active{ color:var(--ink); } .topnav a:hover{ color:var(--accent); }
+  .topnav a.active::after{ content:""; position:absolute; left:0; bottom:-21px; width:100%; height:2px; background:var(--accent); }
+
+  /* ===== Shell ===== */
+  .shell{ display:flex; align-items:stretch; }
+  .sidebar{ position:sticky; top:var(--header); flex:0 0 var(--sidebar); width:var(--sidebar); align-self:flex-start;
+    min-height:calc(100vh - var(--header)); padding:48px 34px; border-right:1px solid var(--line);
+    display:flex; flex-direction:column; gap:15px; }
+  .s-photo{ width:100%; aspect-ratio:1/1; object-fit:cover; display:block; border:1px solid var(--line); box-shadow:0 14px 34px -18px rgba(44,49,59,.45);
+    background:radial-gradient(120% 120% at 30% 20%, var(--bg-2), #d9d3c8 80%); color:var(--ink-faint); font-size:13px; }
+  div.s-photo{ display:flex; align-items:center; justify-content:center; }
+  .s-name{ font-family:"Fraunces",serif; font-weight:500; font-size:26px; line-height:1.05; color:var(--ink); margin-top:4px; }
+  .s-role{ font-size:14px; color:var(--accent); font-weight:700; }
+  .s-affil{ font-size:14px; color:var(--ink-soft); line-height:1.5; }
+  .s-links{ margin-top:8px; display:flex; flex-direction:column; gap:11px; }
+  .s-links a{ display:flex; align-items:center; gap:10px; font-size:14px; font-weight:500; text-decoration:none; color:var(--ink); transition:color .2s var(--ease), transform .2s var(--ease); }
+  .s-links a:hover{ color:var(--accent); transform:translateX(3px); }
+  .s-links svg{ width:17px; height:17px; flex:0 0 17px; color:var(--accent); }
+
+  .main{ flex:1 1 auto; min-width:0; }
+  .page{ display:none; padding:62px 56px 92px; max-width:880px; }
+  .page.active{ display:block; animation:fade .55s var(--ease); }
+  @keyframes fade{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
+
+  /* Section titles in blue */
+  .page h2{ font-family:"Fraunces",serif; font-weight:500; font-size:clamp(32px,4.6vw,46px); color:var(--accent); margin-bottom:26px; letter-spacing:-0.01em; }
+  .page h2 .it{ font-style:italic; color:var(--accent-dp); }
+  .prose p{ font-size:18px; line-height:1.78; color:var(--ink); margin-bottom:16px; }
+  .prose strong{ font-weight:600; }
+
+  /* Interests | Education — no border / no background */
+  .cols{ display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-top:46px; }
+  .col-h{ font-family:"Fraunces",serif; font-weight:500; font-size:22px; color:var(--ink); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--line); }
+  .col ul{ list-style:none; }
+  .col li{ position:relative; padding-left:18px; margin-bottom:13px; font-size:16px; color:var(--ink); }
+  .col li:last-child{ margin-bottom:0; }
+  .col li::before{ content:""; position:absolute; left:0; top:9px; width:6px; height:6px; border-radius:50%; background:var(--accent); }
+  .col .deg{ font-weight:600; color:var(--ink); }
+  .col .det{ font-size:14px; color:var(--ink-soft); }
+  @media (max-width:640px){ .cols{ grid-template-columns:1fr; gap:32px; } }
+
+  /* Publications — thumbnail + body */
+  .pub{ display:grid; grid-template-columns:160px 1fr; gap:28px; padding:26px 0; border-top:1px solid var(--line); transition:padding-left .35s var(--ease); }
+  .pub:first-of-type{ border-top:none; padding-top:4px; } .pub:hover{ padding-left:8px; }
+  .pub .thumb{ width:100%; aspect-ratio:4/3; object-fit:cover; display:block; border:1px solid var(--line);
+    background:radial-gradient(120% 120% at 30% 20%, var(--panel), #cad9ee 85%); color:var(--accent-dp); font-size:12px; }
+  div.thumb{ display:flex; align-items:center; justify-content:center; }
+  .pub .t{ font-size:18px; font-weight:600; color:var(--ink); }
+  .pub .m{ font-size:15px; color:var(--ink-soft); margin-top:4px; } .pub .m .it{ font-style:italic; } .pub strong{ color:var(--ink); }
+  .pub .badge{ display:inline-block; margin-top:9px; font-size:12px; font-weight:600; color:var(--accent-dp); background:var(--panel); border:1px solid var(--panel-line); padding:3px 11px; border-radius:980px; }
+  .pub .lk{ margin-top:11px; display:flex; gap:18px; }
+  .pub .lk a{ font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--accent); text-decoration:none; }
+  .pub .lk a:hover{ text-decoration:underline; text-underline-offset:3px; }
+  @media (max-width:600px){ .pub{ grid-template-columns:1fr; gap:14px; } .pub .thumb{ max-width:220px; } }
+
+  /* News / Awards rows */
+  .row{ display:grid; grid-template-columns:110px 1fr; gap:24px; align-items:baseline; padding:16px 0; border-top:1px solid var(--line); }
+  .row:first-of-type{ border-top:none; padding-top:4px; }
+  .row .d{ font-family:"Fraunces",serif; font-size:17px; color:var(--ink-soft); }
+  .row strong{ font-weight:600; }
+  @media (max-width:520px){ .row{ grid-template-columns:1fr; gap:4px; } }
+
+  /* ===== Home cover: greige ↔ powder-blue blend ===== */
+  .page.home{ max-width:none; padding:0; }
+  .page.home.active{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; min-height:calc(100vh - var(--header)); }
+  .home .hi{ font-family:"Caveat",cursive; font-size:42px; color:var(--accent); line-height:1; }
+  .home h1{ font-family:"Fraunces",serif; font-weight:500; font-size:clamp(52px,9vw,110px); line-height:0.96; letter-spacing:-0.02em; color:var(--ink); margin-top:2px; }
+
+  body.home-mode{ background:linear-gradient(140deg, #ECE7DA 0%, #E5E8E9 48%, #D7E4F3 100%); }
+  body.home-mode .topbar{ background:transparent; border-bottom-color:transparent; }
+  body.home-mode .sidebar{ display:none; }
+
+  /* ===== Responsive ===== */
+  @media (max-width:860px){
+    .topbar{ padding:0 22px; } .topnav{ gap:18px; } .topnav a.active::after{ bottom:-19px; }
+    .shell{ flex-direction:column; }
+    .sidebar{ position:static; width:auto; flex:none; min-height:0; flex-direction:row; flex-wrap:wrap; align-items:center; gap:16px 22px;
+      padding:24px 22px; border-right:none; border-bottom:1px solid var(--line); }
+    .s-photo{ width:84px; flex:0 0 84px; } .s-id{ flex:1 1 200px; }
+    .s-links{ flex:1 1 100%; flex-direction:row; flex-wrap:wrap; gap:10px 20px; margin-top:0; }
+    .page{ padding:44px 22px 70px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===== Top header (nav only) ===== -->
+  <header class="topbar">
+    <nav class="topnav">
+      <a data-page="home" class="active">Home</a>
+      <a data-page="about">About</a>
+      <a data-page="publications">Publications</a>
+      <a data-page="news">News</a>
+      <a data-page="awards">Awards</a>
+    </nav>
+  </header>
+
+  <div class="shell">
+
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar">
+      <div class="s-photo">Photo</div> <!-- replace with <img ... class="s-photo"> -->
+      <div class="s-id">
+        <div class="s-name">Zhejia Zhang</div>
+        <div class="s-role">Graduate Researcher</div>
+        <div class="s-affil">AIMP-Lab, Northwestern University</div>
+      </div>
+      <nav class="s-links">
+        <a href="mailto:zhejiazhang2026@u.northwestern.edu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Email</a>
+        <a href="https://scholar.google.com/citations?user=pd7WZh8AAAAJ" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9 12 5 2 9l10 4 10-4Z"/><path d="M6 11v5c0 1.2 2.7 2.6 6 2.6s6-1.4 6-2.6v-5"/></svg>Google Scholar</a>
+        <a href="https://github.com/zhangzhejia2002-lgtm" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="8" r="2.4"/><path d="M6 8.4v7.2"/><path d="M18 10.4c0 3.1-3.4 3.6-6 3.6"/></svg>GitHub</a>
+        <a href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="3.3"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.6a4 4 0 0 1 0 6.8"/></svg>LinkedIn</a>
+      </nav>
+    </aside>
+
+    <!-- ===== Main ===== -->
+    <main class="main">
+
+      <!-- Home -->
+      <section class="page home active" id="home">
+        <div class="hi script">Hello, I'm</div>
+        <h1>Zhejia Zhang</h1>
+      </section>
+
+      <!-- About -->
+      <section class="page" id="about">
+        <h2>About <span class="it">me</span></h2>
+        <div class="prose">
+          <p>I earned my B.Eng. in Electronic and Electrical Engineering from the <strong>University of Birmingham</strong>, where I worked with <strong>Le Zhang</strong> on missing-modality medical image analysis.</p>
+          <p>I'm now a graduate researcher in the <strong>AIMP-Lab at Northwestern University</strong>, advised by <strong>Bo Zhou</strong>, working on generative models for quantitative medical imaging.</p>
+        </div>
+        <div class="cols">
+          <div class="col">
+            <div class="col-h">Interests</div>
+            <ul>
+              <li>Generative AI</li>
+              <li>Multimodal VLMs</li>
+              <li>Medical Image Analysis</li>
+            </ul>
+          </div>
+          <div class="col">
+            <div class="col-h">Education</div>
+            <ul>
+              <li><span class="deg">M.S. in Electrical Engineering, 2026</span><br><span class="det">Northwestern University, USA</span></li>
+              <li><span class="deg">B.Eng. in Electronic &amp; Electrical Engineering, 2025</span><br><span class="det">University of Birmingham, UK</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Publications -->
+      <section class="page" id="publications">
+        <h2>Publications</h2>
+
+        <!-- Latest paper — PLACEHOLDER: send me the arXiv link and I'll fill it in -->
+        <div class="pub">
+          <div class="thumb">Figure</div>
+          <div class="pub-body">
+            <div class="t">[ Latest paper — title here ]</div>
+            <div class="m"><strong>Zhejia Zhang</strong>, et al. <span class="it">arXiv:XXXX.XXXXX</span>, 2026.</div>
+            <div class="lk"><a href="#" target="_blank" rel="noopener">arXiv</a><a href="#" target="_blank" rel="noopener">PDF</a></div>
+          </div>
+        </div>
+
+        <div class="pub">
+          <div class="thumb">Figure</div>
+          <div class="pub-body">
+            <div class="t">Improved mmFormer for Liver Fibrosis Staging via Missing-Modality Compensation</div>
+            <div class="m"><strong>Zhejia Zhang</strong>, Junjie Wang, Le Zhang. <span class="it">arXiv:2509.16436</span>, 2025.</div>
+            <span class="badge">MICCAI CARE25 · Oral · Top 16%</span>
+            <div class="lk"><a href="https://arxiv.org/abs/2509.16436" target="_blank" rel="noopener">arXiv</a><a href="https://arxiv.org/pdf/2509.16436" target="_blank" rel="noopener">PDF</a></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- News -->
+      <section class="page" id="news">
+        <h2>News</h2>
+        <div class="row"><div class="d">2026.02</div><div>Joined the <strong>AIMP-Lab</strong> at Northwestern University, advised by Bo Zhou.</div></div>
+        <div class="row"><div class="d">2025.09</div><div>Paper accepted at the <strong>MICCAI CARE25 Challenge</strong> (Oral).</div></div>
+        <div class="row"><div class="d">2025.06</div><div>Graduated from the University of Birmingham with <strong>First-Class Honours</strong>.</div></div>
+      </section>
+
+      <!-- Awards -->
+      <section class="page" id="awards">
+        <h2>Awards</h2>
+        <div class="row"><div class="d">2024</div><div>Electrical Engineering Achievement Scholarship — £1,500, University of Birmingham.</div></div>
+        <div class="row"><div class="d">2023</div><div>Engineering International Achievement Scholarship — £1,500, University of Birmingham.</div></div>
+        <div class="row"><div class="d">2022</div><div>Engineering International Excellence Scholarship — £3,000, University of Birmingham.</div></div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    const links = document.querySelectorAll('[data-page]');
+    const pages = document.querySelectorAll('.page');
+    function show(id){
+      if(!document.getElementById(id)) id='home';
+      pages.forEach(p=>p.classList.toggle('active', p.id===id));
+      links.forEach(a=>a.classList.toggle('active', a.dataset.page===id));
+      document.body.classList.toggle('home-mode', id==='home');
+      window.scrollTo(0,0);
+    }
+    links.forEach(a=>a.addEventListener('click', e=>{ e.preventDefault(); location.hash=a.dataset.page; }));
+    window.addEventListener('hashchange', ()=>show(location.hash.slice(1)));
+    show(location.hash.slice(1) || 'home');
+  </script>
+</body>
+</html>
