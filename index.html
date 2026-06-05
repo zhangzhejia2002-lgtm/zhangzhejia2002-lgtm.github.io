@@ -65,8 +65,7 @@
   .s-links svg{ width:17px; height:17px; flex:0 0 17px; color:var(--accent); }
 
   .main{ flex:1 1 auto; min-width:0; }
-  .page{ display:none; padding:62px 56px 92px; max-width:880px; }
-  .page.active{ display:block; animation:fade .55s var(--ease); }
+  .page{ display:block; padding:62px 56px 70px; max-width:880px; scroll-margin-top:calc(var(--header) + 12px); }
   @keyframes fade{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
 
   /* Section titles in blue */
@@ -108,14 +107,11 @@
   @media (max-width:520px){ .row{ grid-template-columns:1fr; gap:4px; } }
 
   /* ===== Home cover: greige ↔ powder-blue blend ===== */
-  .page.home{ max-width:none; padding:0; }
-  .page.home.active{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; min-height:calc(100vh - var(--header)); }
+  .page.home{ display:flex; flex-direction:column; justify-content:center; min-height:calc(100vh - var(--header)); max-width:none; padding:0 56px; }
   .home .hi{ font-family:"Caveat",cursive; font-size:42px; color:var(--accent); line-height:1; }
   .home h1{ font-family:"Fraunces",serif; font-weight:500; font-size:clamp(52px,9vw,110px); line-height:0.96; letter-spacing:-0.02em; color:var(--ink); margin-top:2px; }
 
-  body.home-mode{ background:linear-gradient(140deg, #ECE7DA 0%, #E5E8E9 48%, #D7E4F3 100%); }
-  body.home-mode .topbar{ background:transparent; border-bottom-color:transparent; }
-  body.home-mode .sidebar{ display:none; }
+  html{ scroll-behavior:smooth; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
 
   /* ===== Responsive ===== */
   @media (max-width:860px){
@@ -243,19 +239,15 @@
     </main>
   </div>
 
-  <script>
-    const links = document.querySelectorAll('[data-page]');
-    const pages = document.querySelectorAll('.page');
-    function show(id){
-      if(!document.getElementById(id)) id='home';
-      pages.forEach(p=>p.classList.toggle('active', p.id===id));
-      links.forEach(a=>a.classList.toggle('active', a.dataset.page===id));
-      document.body.classList.toggle('home-mode', id==='home');
-      window.scrollTo(0,0);
-    }
-    links.forEach(a=>a.addEventListener('click', e=>{ e.preventDefault(); location.hash=a.dataset.page; }));
-    window.addEventListener('hashchange', ()=>show(location.hash.slice(1)));
-    show(location.hash.slice(1) || 'home');
-  </script>
-</body>
-</html>
+<script>
+  const links = document.querySelectorAll('.topnav a');
+  const sections = [...links].map(a => document.querySelector(a.getAttribute('href')));
+  const io = new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  sections.forEach(s => s && io.observe(s));
+</script>
