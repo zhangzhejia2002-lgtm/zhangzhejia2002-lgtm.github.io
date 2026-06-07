@@ -153,6 +153,10 @@
   .exp-item .cap{ margin-top:8px; font-size:13px; color:var(--ink-soft); }
   @media (max-width:520px){ .exp-item{ flex:0 0 74vw; } .exp-item img{ height:62vw; } }
 
+  /* ===== Visitor map (MapMyVisitors) in footer ===== */
+  .foot-map{ flex:1 1 100%; display:flex; justify-content:center; margin-top:14px; }
+  .foot-map img{ border:1px solid var(--line); border-radius:2px; }
+
   /* lightbox */
   .lb{ position:fixed; inset:0; z-index:200; background:rgba(20,18,15,.92); display:none; align-items:center; justify-content:center; }
   .lb.open{ display:flex; animation:fade .3s var(--ease); }
@@ -374,6 +378,17 @@
       <footer class="site-foot">
         <span class="foot-copy">© <span id="foot-year">2026</span> Zhejia Zhang</span>
         <span class="foot-stats">Visits <span id="vercount_value_site_pv">…</span> · Visitors <span id="vercount_value_site_uv">…</span></span>
+
+        <!-- ===== MapMyVisitors visitor map widget =====
+             Colors matched to the site palette:
+               co (ocean)=5c7c9e  cl (land)=f4eee1
+               cmn (recent)=3f567a  cmo (past)=9aa0a8  ct (text)=3f567a
+             Tip: paste your own token from the MapMyVisitors "Copy" button
+             to be safe; the d= value below was read off your screenshot. -->
+        <div class="foot-map">
+          <script type="text/javascript" id="mapmyvisitors"
+            src="https://mapmyvisitors.com/map.js?cl=f4eee1&w=a&t=n&d=uRSlBQqJrn3_V-yHc4UtYBl_fbRLsNN2Hkpout_24sE&co=5c7c9e&cmo=9aa0a8&cmn=3f567a&ct=3f567a"></script>
+        </div>
       </footer>
 
     </main>
@@ -472,5 +487,15 @@
     if (fy) fy.textContent = new Date().getFullYear();
   </script>
   <script defer src="https://events.vercount.one/js"></script>
+
+  <!-- ===== Cloudflare Web Analytics (private dashboard only) =====
+       This beacon only SENDS data to your Cloudflare dashboard; it does
+       NOT display any number on the page. View stats by logging in to
+       Cloudflare → Web Analytics.
+       Get your token: Cloudflare dashboard → Analytics & Logs →
+       Web Analytics → Add a site → copy the data-cf-beacon token.
+       Then replace YOUR_CLOUDFLARE_TOKEN below. -->
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+    data-cf-beacon='{"token": "YOUR_CLOUDFLARE_TOKEN"}'></script>
 </body>
 </html>
