@@ -75,7 +75,6 @@
   .sec:first-child{ padding-top:60px; }
   .sec.wide{ max-width:1000px; }
   .site-foot{ max-width:880px; padding:30px 56px 64px; font-size:13px; color:var(--ink-faint); display:flex; flex-wrap:wrap; gap:6px 20px; align-items:baseline; justify-content:space-between; }
-  .site-foot .foot-stats{ font-variant-numeric:tabular-nums; }
 
   .sec h2{ font-family:"Caveat",cursive; font-weight:600; font-size:clamp(44px,5.6vw,60px); color:var(--accent); margin:0 0 26px; letter-spacing:-0.01em; line-height:1; }
   .sec h2 .it{ font-style:italic; color:var(--accent); }
@@ -373,7 +372,6 @@
 
       <footer class="site-foot">
         <span class="foot-copy">© <span id="foot-year">2026</span> Zhejia Zhang</span>
-        <span class="foot-stats">Visits <span id="vercount_value_site_pv">…</span> · Visitors <span id="vercount_value_site_uv">…</span></span>
       </footer>
 
     </main>
@@ -473,18 +471,20 @@
   </script>
 
   <!-- =========================================================
-       Visitor analytics — loaded ONLY for non-owners.
-       · On YOUR own devices/browsers, visit the page once with ?owner=1
-         appended to the URL (e.g. https://yoursite.com/?owner=1).
-         A flag is stored in that browser's localStorage and your future
-         visits will NOT be counted by vercount or Cloudflare.
+       Cloudflare Web Analytics — loaded ONLY for non-owners.
+       Stats go to your private Cloudflare dashboard; nothing is
+       shown on the page.
+       · On YOUR own devices/browsers, visit the page once with
+         ?owner=1 (e.g. https://yoursite.com/?owner=1). A flag is
+         saved in that browser's localStorage and your future visits
+         will NOT be counted.
        · To undo it on a device, visit with ?owner=0 once.
-       · Note: the flag is per-browser. Repeat ?owner=1 on every browser
-         / device / profile you use, and again if you clear site data.
+       · The flag is per-browser: repeat ?owner=1 on every browser /
+         device / profile you use, and again if you clear site data.
        ========================================================= -->
   <script>
     (function () {
-      // 1) Owner detection
+      // Owner detection
       try {
         var qs = new URLSearchParams(location.search);
         if (qs.has('owner')) {
@@ -494,35 +494,14 @@
       } catch (e) {}
       var isOwner = false;
       try { isOwner = localStorage.getItem('site_owner') === '1'; } catch (e) {}
+      if (isOwner) return;  // owner: don't load the tracker at all
 
-      if (isOwner) {
-        // Don't load any tracker; just fill the footer so it isn't stuck on "…"
-        document.addEventListener('DOMContentLoaded', function () {
-          var pv = document.getElementById('vercount_value_site_pv');
-          var uv = document.getElementById('vercount_value_site_uv');
-          if (pv) pv.textContent = '—';
-          if (uv) uv.textContent = '—';
-        });
-        return;
-      }
-
-      // 2) vercount — the Visits / Visitors numbers shown in the footer
-      var vc = document.createElement('script');
-      vc.defer = true;
-      vc.src = 'https://events.vercount.one/js';
-      document.head.appendChild(vc);
-
-      // 3) Cloudflare Web Analytics — private dashboard only (no number on page).
-      //    Replace YOUR_CLOUDFLARE_TOKEN with the token from your Cloudflare
-      //    Web Analytics site, then keep this here. Leave as-is to skip Cloudflare.
-      var CF_TOKEN = 'YOUR_CLOUDFLARE_TOKEN';
-      if (CF_TOKEN && CF_TOKEN !== 'YOUR_CLOUDFLARE_TOKEN') {
-        var cf = document.createElement('script');
-        cf.defer = true;
-        cf.src = 'https://static.cloudflareinsights.com/beacon.min.js';
-        cf.setAttribute('data-cf-beacon', JSON.stringify({ token: CF_TOKEN }));
-        document.body.appendChild(cf);
-      }
+      // Cloudflare Web Analytics beacon
+      var cf = document.createElement('script');
+      cf.defer = true;
+      cf.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+      cf.setAttribute('data-cf-beacon', JSON.stringify({ token: '9055e423528c48aeb3ca87347a3288ca' }));
+      document.body.appendChild(cf);
     })();
   </script>
 </body>
