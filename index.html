@@ -1,10 +1,6 @@
 <!--
   ============================================================
   Zhejia Zhang — Personal Academic Homepage
-  · Gallery clusters: each is a "stack" of tilted photos. Click a
-    stack to expand it in place; click any photo to open it
-    fullscreen (lightbox) with prev / next / close.
-  · Photos: 1.jpg … 13.jpg, 14.png, 15.jpg in the repo root.
   ============================================================
 -->
 <!DOCTYPE html>
@@ -470,18 +466,6 @@
     if (fy) fy.textContent = new Date().getFullYear();
   </script>
 
-  <!-- =========================================================
-       Cloudflare Web Analytics — loaded ONLY for non-owners.
-       Stats go to your private Cloudflare dashboard; nothing is
-       shown on the page.
-       · On YOUR own devices/browsers, visit the page once with
-         ?owner=1 (e.g. https://yoursite.com/?owner=1). A flag is
-         saved in that browser's localStorage and your future visits
-         will NOT be counted.
-       · To undo it on a device, visit with ?owner=0 once.
-       · The flag is per-browser: repeat ?owner=1 on every browser /
-         device / profile you use, and again if you clear site data.
-       ========================================================= -->
   <script>
     (function () {
       // Owner detection
@@ -494,14 +478,19 @@
       } catch (e) {}
       var isOwner = false;
       try { isOwner = localStorage.getItem('site_owner') === '1'; } catch (e) {}
-      if (isOwner) return;  // owner: don't load the tracker at all
+      if (isOwner) return;  // owner: don't load Google Analytics at all
 
-      // Cloudflare Web Analytics beacon
-      var cf = document.createElement('script');
-      cf.defer = true;
-      cf.src = 'https://static.cloudflareinsights.com/beacon.min.js';
-      cf.setAttribute('data-cf-beacon', JSON.stringify({ token: '9055e423528c48aeb3ca87347a3288ca' }));
-      document.body.appendChild(cf);
+      // Load gtag.js
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-5R6XS2J96R';
+      document.head.appendChild(s);
+
+      // Standard GA4 init
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-5R6XS2J96R');
     })();
   </script>
 </body>
