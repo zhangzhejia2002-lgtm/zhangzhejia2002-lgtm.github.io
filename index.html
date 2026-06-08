@@ -71,6 +71,8 @@
   .sec:first-child{ padding-top:60px; }
   .sec.wide{ max-width:1000px; }
   .site-foot{ max-width:880px; padding:30px 56px 64px; font-size:13px; color:var(--ink-faint); display:flex; flex-wrap:wrap; gap:6px 20px; align-items:baseline; justify-content:space-between; }
+  .foot-map{ flex:1 1 100%; display:flex; justify-content:flex-start; margin-top:14px; }
+  .foot-map img{ border:1px solid var(--line); border-radius:2px; }
 
   .sec h2{ font-family:"Caveat",cursive; font-weight:600; font-size:clamp(44px,5.6vw,60px); color:var(--accent); margin:0 0 26px; letter-spacing:-0.01em; line-height:1; }
   .sec h2 .it{ font-style:italic; color:var(--accent); }
@@ -368,6 +370,12 @@
 
       <footer class="site-foot">
         <span class="foot-copy">© <span id="foot-year">2026</span> Zhejia Zhang</span>
+
+        <!-- ===== MapMyVisitors visitor map widget (just for fun) ===== -->
+        <div class="foot-map">
+          <script type="text/javascript" id="mapmyvisitors"
+            src="https://mapmyvisitors.com/map.js?cl=f4eee1&w=300&t=n&d=uRSlBQqJrn3_V-yHc4UtYBl_fbRLsNN2Hkpout_24sE&co=5c7c9e&cmo=9aa0a8&cmn=3f567a&ct=3f567a"></script>
+        </div>
       </footer>
 
     </main>
@@ -464,34 +472,6 @@
 
     const fy = document.getElementById('foot-year');
     if (fy) fy.textContent = new Date().getFullYear();
-  </script>
-
-  <script>
-    (function () {
-      // Owner detection
-      try {
-        var qs = new URLSearchParams(location.search);
-        if (qs.has('owner')) {
-          if (qs.get('owner') === '0') localStorage.removeItem('site_owner');
-          else localStorage.setItem('site_owner', '1');
-        }
-      } catch (e) {}
-      var isOwner = false;
-      try { isOwner = localStorage.getItem('site_owner') === '1'; } catch (e) {}
-      if (isOwner) return;  // owner: don't load Google Analytics at all
-
-      // Load gtag.js
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-5R6XS2J96R';
-      document.head.appendChild(s);
-
-      // Standard GA4 init
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){ dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', 'G-5R6XS2J96R');
-    })();
   </script>
 </body>
 </html>
