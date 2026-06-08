@@ -153,10 +153,6 @@
   .exp-item .cap{ margin-top:8px; font-size:13px; color:var(--ink-soft); }
   @media (max-width:520px){ .exp-item{ flex:0 0 74vw; } .exp-item img{ height:62vw; } }
 
-  /* ===== Visitor map (MapMyVisitors) in footer ===== */
-  .foot-map{ flex:1 1 100%; display:flex; justify-content:flex-start; margin-top:14px; }
-  .foot-map img{ border:1px solid var(--line); border-radius:2px; }
-
   /* lightbox */
   .lb{ position:fixed; inset:0; z-index:200; background:rgba(20,18,15,.92); display:none; align-items:center; justify-content:center; }
   .lb.open{ display:flex; animation:fade .3s var(--ease); }
@@ -378,17 +374,6 @@
       <footer class="site-foot">
         <span class="foot-copy">© <span id="foot-year">2026</span> Zhejia Zhang</span>
         <span class="foot-stats">Visits <span id="vercount_value_site_pv">…</span> · Visitors <span id="vercount_value_site_uv">…</span></span>
-
-        <!-- ===== MapMyVisitors visitor map widget =====
-             Colors matched to the site palette:
-               co (ocean)=5c7c9e  cl (land)=f4eee1
-               cmn (recent)=3f567a  cmo (past)=9aa0a8  ct (text)=3f567a
-             Tip: paste your own token from the MapMyVisitors "Copy" button
-             to be safe; the d= value below was read off your screenshot. -->
-        <div class="foot-map">
-          <script type="text/javascript" id="mapmyvisitors"
-            src="https://mapmyvisitors.com/map.js?cl=f4eee1&w=300&t=n&d=uRSlBQqJrn3_V-yHc4UtYBl_fbRLsNN2Hkpout_24sE&co=5c7c9e&cmo=9aa0a8&cmn=3f567a&ct=3f567a"></script>
-        </div>
       </footer>
 
     </main>
@@ -486,16 +471,59 @@
     const fy = document.getElementById('foot-year');
     if (fy) fy.textContent = new Date().getFullYear();
   </script>
-  <script defer src="https://events.vercount.one/js"></script>
 
-  <!-- ===== Cloudflare Web Analytics (private dashboard only) =====
-       This beacon only SENDS data to your Cloudflare dashboard; it does
-       NOT display any number on the page. View stats by logging in to
-       Cloudflare → Web Analytics.
-       Get your token: Cloudflare dashboard → Analytics & Logs →
-       Web Analytics → Add a site → copy the data-cf-beacon token.
-       Then replace YOUR_CLOUDFLARE_TOKEN below. -->
-  <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
-    data-cf-beacon='{"token": "YOUR_CLOUDFLARE_TOKEN"}'></script>
+  <!-- =========================================================
+       Visitor analytics — loaded ONLY for non-owners.
+       · On YOUR own devices/browsers, visit the page once with ?owner=1
+         appended to the URL (e.g. https://yoursite.com/?owner=1).
+         A flag is stored in that browser's localStorage and your future
+         visits will NOT be counted by vercount or Cloudflare.
+       · To undo it on a device, visit with ?owner=0 once.
+       · Note: the flag is per-browser. Repeat ?owner=1 on every browser
+         / device / profile you use, and again if you clear site data.
+       ========================================================= -->
+  <script>
+    (function () {
+      // 1) Owner detection
+      try {
+        var qs = new URLSearchParams(location.search);
+        if (qs.has('owner')) {
+          if (qs.get('owner') === '0') localStorage.removeItem('site_owner');
+          else localStorage.setItem('site_owner', '1');
+        }
+      } catch (e) {}
+      var isOwner = false;
+      try { isOwner = localStorage.getItem('site_owner') === '1'; } catch (e) {}
+
+      if (isOwner) {
+        // Don't load any tracker; just fill the footer so it isn't stuck on "…"
+        document.addEventListener('DOMContentLoaded', function () {
+          var pv = document.getElementById('vercount_value_site_pv');
+          var uv = document.getElementById('vercount_value_site_uv');
+          if (pv) pv.textContent = '—';
+          if (uv) uv.textContent = '—';
+        });
+        return;
+      }
+
+      // 2) vercount — the Visits / Visitors numbers shown in the footer
+      var vc = document.createElement('script');
+      vc.defer = true;
+      vc.src = 'https://events.vercount.one/js';
+      document.head.appendChild(vc);
+
+      // 3) Cloudflare Web Analytics — private dashboard only (no number on page).
+      //    Replace YOUR_CLOUDFLARE_TOKEN with the token from your Cloudflare
+      //    Web Analytics site, then keep this here. Leave as-is to skip Cloudflare.
+      var CF_TOKEN = 'YOUR_CLOUDFLARE_TOKEN';
+      if (CF_TOKEN && CF_TOKEN !== 'YOUR_CLOUDFLARE_TOKEN') {
+        var cf = document.createElement('script');
+        cf.defer = true;
+        cf.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+        cf.setAttribute('data-cf-beacon', JSON.stringify({ token: CF_TOKEN }));
+        document.body.appendChild(cf);
+      }
+    })();
+  </script>
 </body>
 </html>
