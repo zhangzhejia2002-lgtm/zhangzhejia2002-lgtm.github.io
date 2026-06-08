@@ -468,39 +468,7 @@
     if (fy) fy.textContent = new Date().getFullYear();
   </script>
 
-  <!-- =========================================================
-       vercount visitor counter 
-       ========================================================= -->
-  <script>
-    (function () {
-      // Owner detection
-      try {
-        var qs = new URLSearchParams(location.search);
-        if (qs.has('owner')) {
-          if (qs.get('owner') === '0') localStorage.removeItem('site_owner');
-          else localStorage.setItem('site_owner', '1');
-        }
-      } catch (e) {}
-      var isOwner = false;
-      try { isOwner = localStorage.getItem('site_owner') === '1'; } catch (e) {}
-
-      if (isOwner) {
-        // Owner: don't load the counter; fill footer so it isn't stuck on "…"
-        document.addEventListener('DOMContentLoaded', function () {
-          var pv = document.getElementById('vercount_value_site_pv');
-          var uv = document.getElementById('vercount_value_site_uv');
-          if (pv) pv.textContent = '—';
-          if (uv) uv.textContent = '—';
-        });
-        return;
-      }
-
-      // vercount: populates the footer Visits / Visitors numbers
-      var vc = document.createElement('script');
-      vc.defer = true;
-      vc.src = 'https://events.vercount.one/js';
-      document.head.appendChild(vc);
-    })();
-  </script>
+  <!-- vercount visitor counter — fills the footer Visits / Visitors numbers -->
+  <script defer src="https://events.vercount.one/js"></script>
 </body>
 </html>
